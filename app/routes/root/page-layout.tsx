@@ -10,7 +10,7 @@ const PageLayout = () => {
       navigate('/sign-in');
     } catch (error) {
       console.error('Logout failed:', error);
-      // You might want to show an error toast/notification here
+      
     }
   };
 

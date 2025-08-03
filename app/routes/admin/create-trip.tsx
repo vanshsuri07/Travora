@@ -11,13 +11,14 @@ import {account} from "~/appwrite/client";
 import {useNavigate} from "react-router";
 
 export const loader = async () => {
-    const response = await fetch('https://restcountries.com/v3.1/all');
-    const data = await response.json();
+    const response = await fetch('https://www.apicountries.com/countries');
+    const countries = await response.json();
 
-    return data.map((country: any) => ({
-        name: country.flag + country.name.common,
+    return countries.map((country: any) => ({
+        name: country.name,
+        
         coordinates: country.latlng,
-        value: country.name.common,
+        value: country.name,
         openStreetMap: country.maps?.openStreetMap,
     }))
 }

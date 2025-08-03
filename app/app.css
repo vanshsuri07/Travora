@@ -439,8 +439,8 @@
   }
   .button-class {
     @apply !bg-primary-100 !px-4 !rounded-lg !flex !items-center !justify-center !gap-1.5 !shadow-none;
-  }
-  .button-class-secondary {
+  } 
+   .button-class-secondary {
     @apply !bg-white !px-4 !rounded-lg !flex !items-center !justify-center !gap-1.5 !shadow-sm;
   }
   .form-label {
@@ -536,7 +536,7 @@ body {
   padding-left: 36px;
   padding-right: 36px;
 }
-e-input-group-icon e-ddl-icon e-search-icon
+
 
 .e-input-group-icon {
   position: absolute;

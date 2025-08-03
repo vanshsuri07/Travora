@@ -13,7 +13,7 @@ export default function MobileSlidebar() {
       <header className="flex items-center justify-between px-4 py-2  ">
   <Link to="/" className="flex items-center gap-2">
     <img src="/assets/icons/logo.svg" alt="Logo" className="size-[30px]" />
-    <h1 className="text-lg font-bold">Travoraagency</h1>
+    <h1 className="text-lg font-bold">Travora</h1>
                 </Link>
 
   <button onClick={toggleSidebar} className=" block lg:hidden hover:bg-gray-100">

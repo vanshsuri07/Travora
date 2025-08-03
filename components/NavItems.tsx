@@ -16,7 +16,7 @@ export default function NavItems({ handleClick}: { handleClick?: () => void }) {
     <section className='nav-items'>
         <Link to='/' className="link-logo">
                 <img src="/assets/icons/logo.svg" alt="logo" className="size-[30px]" />
-                <h1>Tourvisto</h1>
+                <h1>Travora</h1>
             </Link>
           
 
@@ -52,7 +52,7 @@ export default function NavItems({ handleClick}: { handleClick?: () => void }) {
                 onClick={handleLogout}
                 className="cursor-pointer">
                     <img  
-                    src="assets/icons/logout.svg"
+                    src="/assets/icons/logout.svg"
                     alt="logout"
                     className="size-6"/>
             </button>

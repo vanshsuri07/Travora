@@ -3,11 +3,14 @@ import {ButtonComponent} from "@syncfusion/ej2-react-buttons";
 import {loginWithGoogle} from "~/appwrite/auth";
 import {account} from "~/appwrite/client";
 
+
+
+
 export async function clientLoader() {
     try {
       const user = await account.get();
 
-        if(!user.$id) return redirect('/');
+        if(user.$id) return redirect('/dashboard.tsx');
     } catch (e) {
         console.log('Error fetching user', e)
     }
