@@ -12,23 +12,36 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-transparent font-inter">
+    <nav className="fixed top-0 left-0 w-full z-50 
+    bg-white/10 backdrop-blur-md border-b border-white/20 
+    shadow-lg font-poppins font-semibold">
       <div className="wrapper py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link to="/users/home">
-            <img src="/assets/icons/logo.svg" alt="Travora Logo" className="h-8" />
-          </Link>
+          <Link to="/users/home" className="flex items-center gap-2">
+  <img
+    src="/assets/icons/logo.svg"
+    alt="Travora Logo"
+    className="h-8 w-8"
+  />
+  <span className="font-poppins font-semibold text-2xl">Travora</span>
+</Link>
+
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-10">
             {navLinks.map((link) => (
-              <a key={link.label} href={link.href} className="text-white text-lg hover:text-gray-200 transition-colors">
+              <a key={link.label} href={link.href} className="text-black text-lg hover:text-gray-200 transition-colors font-poppins font-semibold">
                 {link.label}
               </a>
             ))}
-             <Link to="/root/sign-in">
-                <button className='button-class'>Sign In</button>
+            </div>
+            <div>
+
+            
+             <Link to="/sign-in">
+                <button className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 
+text-white font-medium shadow-md hover:shadow-lg hover:scale-105 transition">Sign In</button>
              </Link>
           </div>
 
