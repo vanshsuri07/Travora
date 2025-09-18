@@ -40,8 +40,14 @@ const Navbar = () => {
 
             
              <Link to="/sign-in">
-                <button className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 
-text-white font-medium shadow-md hover:shadow-lg hover:scale-105 transition">Sign In</button>
+                <button
+  className="px-5 py-2 rounded-lg font-semibold text-white 
+  bg-gradient-to-r from-blue-500 to-purple-500 
+  hover:from-purple-500 hover:to-pink-500 
+  transition-all duration-300 shadow-md hover:shadow-lg"
+>
+  Sign In
+</button>
              </Link>
           </div>
 
