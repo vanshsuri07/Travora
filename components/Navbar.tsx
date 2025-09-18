@@ -1,31 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Link, useLoaderData } from 'react-router'; // Assuming you're using an older version of react-router
-
-
-
-  interface User {
-  name: string;
-  email: string;
-  imageUrl?: string;
-}
+import { Link, useLocation } from 'react-router-dom';
+import { user as userApi } from '~/appwrite/sessions';
 
 // A simple component for the user profile dropdown
-const UserProfileDropdown = ({ onLogout }: { onLogout: () => void }) => {
+const UserProfileDropdown = ({ user, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const user = useLoaderData();
- 
- 
-
 
   return (
-
     <div className="relative">
       <button
-      onClick={() => setIsOpen(!isOpen)}
-      className="flex items-center justify-center h-10 w-10 rounded-full bg-gray-200 text-gray-600 font-bold text-lg overflow-hidden"
-    >
-      <img src={user?.imageUrl || '/assets/images/david.webp'} alt={user?.name || 'user'} referrerPolicy="no-referrer"  />
-    </button>
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-center h-10 w-10 rounded-full bg-gray-200 text-gray-600 font-bold text-lg overflow-hidden"
+      >
+        <img src={user?.prefs?.imageUrl || '/assets/images/david.webp'} alt={user?.name || 'user'} referrerPolicy="no-referrer" />
+      </button>
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5">
           <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setIsOpen(false)}>
@@ -46,32 +34,32 @@ const UserProfileDropdown = ({ onLogout }: { onLogout: () => void }) => {
   );
 };
 
-
 // Main Navbar Component
-interface NavbarProps {
-  isAuthenticated: boolean;
-  onLogout: () => void;
-}
-
-const Navbar = ({ isAuthenticated, onLogout }: NavbarProps) => {
+const Navbar = ({ user }) => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const handleLogout = async () => {
+    await userApi.logout();
+    window.location.href = '/';
+  };
 
   // Define links for guests and authenticated users
   const guestLinks = [
-    { href: '/users/home', label: 'Home' },
+    { href: '/', label: 'Home' },
     { href: '#about', label: 'About Us' },
     { href: '#tours', label: 'Tours' },
     { href: '/contact', label: 'Contact' },
   ];
 
   const userLinks = [
-    { href: '/user', label: 'Home' },
-    { href: '/my-trips', label: 'My Trips' },
-    { href: '/wishlist', label: 'Wishlist' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/users/home', label: 'Home' },
+    { href: '/users/my-trips', label: 'My Trips' },
+    { href: '/users/wishlist', label: 'Wishlist' },
+    { href: '/users/contact', label: 'Contact' },
   ];
 
-  const navLinks = isAuthenticated ? userLinks : guestLinks;
+  const navLinks = user ? userLinks : guestLinks;
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white/10 backdrop-blur-md border-b border-white/20 shadow-lg font-poppins text-black">
@@ -98,14 +86,14 @@ const Navbar = ({ isAuthenticated, onLogout }: NavbarProps) => {
 
           {/* Conditional Action Area: Sign In Button or User Profile */}
           <div className="hidden lg:block">
-            {isAuthenticated ? (
-              <UserProfileDropdown onLogout={onLogout}  />
+            {user ? (
+              <UserProfileDropdown user={user} onLogout={handleLogout} />
             ) : (
               <Link to="/sign-in">
                 <button
-                  className="px-5 py-2 rounded-lg font-semibold text-white 
-                  bg-gradient-to-r from-blue-500 to-purple-500 
-                  hover:from-purple-500 hover:to-pink-500 
+                  className="px-5 py-2 rounded-lg font-semibold text-white
+                  bg-gradient-to-r from-blue-500 to-purple-500
+                  hover:from-purple-500 hover:to-pink-500
                   transition-all duration-300 shadow-md hover:shadow-lg"
                 >
                   Sign In
@@ -134,10 +122,10 @@ const Navbar = ({ isAuthenticated, onLogout }: NavbarProps) => {
               </Link>
             ))}
             <div className="mt-4">
-               {isAuthenticated ? (
+               {user ? (
                   <button
                     onClick={() => {
-                      onLogout();
+                      handleLogout();
                       setMobileMenuOpen(false);
                     }}
                     className="px-8 py-3 rounded-lg font-semibold text-black bg-white"

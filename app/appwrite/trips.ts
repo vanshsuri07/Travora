@@ -65,3 +65,22 @@ export const getWishlist = async (userId: string) => {
         return [];
     }
 }
+
+export const removeFromWishlist = async (tripId: string, userId: string) => {
+    try {
+        const wishlistItem = await database.listDocuments(
+            appwriteConfig.databaseId,
+            'wishlist',
+            [Query.equal('tripId', tripId), Query.equal('userId', userId)]
+        );
+        if (wishlistItem.documents.length > 0) {
+            await database.deleteDocument(
+                appwriteConfig.databaseId,
+                'wishlist',
+                wishlistItem.documents[0].$id
+            );
+        }
+    } catch (error) {
+        console.error('Error removing from wishlist:', error);
+    }
+}
