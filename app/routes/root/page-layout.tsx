@@ -4,12 +4,12 @@ import Footer from '../../../components/Footer'
 
 const PageLayout = () => {
   return (
-    <main className="">
+    <main className="relative">
       <Navbar />
       <section>
         <Outlet />
       </section>
-      
+      <Footer />
     </main>
   );
 };

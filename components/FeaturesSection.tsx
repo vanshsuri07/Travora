@@ -9,7 +9,7 @@ const FeaturesSection = () => {
             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div className="text-center">
                     <motion.h2
-                        variants={fadeIn('up', 0.2)}
+                        variants={fadeIn('up', 0.2) as any}
                         initial='hidden'
                         whileInView={'show'}
                         viewport={{once: false, amount: 0.2}}
@@ -18,7 +18,7 @@ const FeaturesSection = () => {
                         Explore Our Popular Trips
                     </motion.h2>
                     <motion.p
-                        variants={fadeIn('up', 0.4)}
+                        variants={fadeIn('up', 0.4) as any}
                         initial='hidden'
                         whileInView={'show'}
                         viewport={{once: false, amount: 0.4}}
@@ -31,7 +31,7 @@ const FeaturesSection = () => {
                     className="grid grid-cols-1 gap-6 px-8 mt-12 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 sm:px-0"
                 >
                     <motion.div
-                        variants={fadeIn('up', 0.6)}
+                        variants={fadeIn('up', 0.6) as any}
                         initial='hidden'
                         whileInView={'show'}
                         viewport={{once: false, amount: 0.2}}
@@ -46,8 +46,8 @@ const FeaturesSection = () => {
                         />
                     </motion.div>
                     <motion.div
-                        variants={fadeIn('up', 0.8)}
-                        initial='hidden'
+                        variants={fadeIn('up', 0.8) as any}
+                        initial='hidden' 
                         whileInView={'show'}
                         viewport={{once: false, amount: 0.2}}
                     >
@@ -61,7 +61,7 @@ const FeaturesSection = () => {
                         />
                     </motion.div>
                     <motion.div
-                        variants={fadeIn('up', 1)}
+                        variants={fadeIn('up', 1) as any}
                         initial='hidden'
                         whileInView={'show'}
                         viewport={{once: false, amount: 0.2}}
@@ -76,7 +76,7 @@ const FeaturesSection = () => {
                         />
                     </motion.div>
                     <motion.div
-                        variants={fadeIn('up', 1.2)}
+                        variants={fadeIn('up', 1.2)as any}
                         initial='hidden'
                         whileInView={'show'}
                         viewport={{once: false, amount: 0.2}}
@@ -91,7 +91,7 @@ const FeaturesSection = () => {
                         />
                     </motion.div>
                     <motion.div
-                        variants={fadeIn('up', 1.4)}
+                        variants={fadeIn('up', 1.4) as any}
                         initial='hidden'
                         whileInView={'show'}
                         viewport={{once: false, amount: 0.2}}
@@ -106,7 +106,7 @@ const FeaturesSection = () => {
                         />
                     </motion.div>
                     <motion.div
-                        variants={fadeIn('up', 1.6)}
+                        variants={fadeIn('up', 1.6) as any}
                         initial='hidden'
                         whileInView={'show'}
                         viewport={{once: false, amount: 0.2}}
