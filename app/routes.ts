@@ -27,8 +27,9 @@ export default [
     index("routes/root/page.tsx"),
 
     // User travel pages
-    route("trips", "routes/users/travel-page.tsx"),
-    route("trips/:tripId", "routes/users/trip-detail.tsx"),
+    route("user", "routes/users/user-layout.tsx"),
+    route("trip", "routes/users/create-trip.tsx"),
+    route("trip/:tripId", "routes/users/trip-detail.tsx"),
 
     // // Optional: user profile/settings
     // route("profile", "routes/users/profile.tsx"),

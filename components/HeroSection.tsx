@@ -112,7 +112,7 @@ const HeroSection = () => {
   <directionalLight position={[5, 5, 5]} intensity={2} />
 
   {/* ✅ Your globe */}
-  <group scale={50} position={[0, -1, 0]}>
+  <group scale={2.5} position={[0, -1.5, 0]}>
     <Model />
   </group>
 </Canvas>

@@ -1,17 +1,14 @@
-// import { Outlet } from 'react-router';
-// import Navbar from '../../../components/Navbar';
-// import Footer from '../../../components/Footer'
+import UpcomingTrips from 'components/UpcomingTrips';
+import WelcomeSection from 'components/Welcome';
+import React from 'react'
 
-// const UserLayout = () => {
-//   return (
-//     <main className="relative">
-//       <Navbar />
-//       <section>
-//         <Outlet />
-//       </section>
-//       <Footer />
-//     </main>
-//   );
-// };
+const UserLayout = () => {
+  return (
+    <div>
+      <WelcomeSection />
+      <UpcomingTrips />
+    </div>
+  )
+}
 
-// export default UserLayout;
+export default UserLayout;

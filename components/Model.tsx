@@ -54,44 +54,35 @@ function GLTFEarth(props: any) {
   const { nodes, materials } = useGLTF('/assets/models/earth.glb') as any
   const modelRef = useRef<any>(null)
   
-  // Add rotation animation
   useFrame((state) => {
     if (modelRef.current) {
       modelRef.current.rotation.y += 0.005
     }
   })
 
-  console.log('GLTF nodes:', nodes)
-  console.log('GLTF materials:', materials)
+  // Find the first mesh in the GLTF scene
+  const firstMesh = Object.values(nodes).find((node: any) => node.isMesh) as THREE.Mesh;
 
-  // Check if the model loaded properly
-  if (!nodes?.Cube001?.geometry) {
-    console.warn('GLTF Cube001 not found, available nodes:', Object.keys(nodes || {}))
+  if (!firstMesh) {
+    console.warn('No mesh found in GLTF model, rendering fallback.')
     return <FallbackEarth />
   }
 
-  // Try to find the material in different locations
-  let earthMaterial = materials?.["Default OBJ"] || 
-                      nodes?.["Default OBJ"] ||
-                      materials?.[Object.keys(materials)[0]]
-
-  // If no material found, create a fallback
-  if (!earthMaterial) {
-    earthMaterial = new THREE.MeshStandardMaterial({
-      color: '#4a90e2',
-      roughness: 0.7,
-      metalness: 0.1
-    })
-  }
+  // Use the material that came with the mesh, or a fallback
+  const earthMaterial = firstMesh.material || new THREE.MeshStandardMaterial({
+    color: '#4a90e2',
+    roughness: 0.7,
+    metalness: 0.1
+  });
 
   return (
     <group {...props} ref={modelRef} dispose={null}>
       <mesh
         castShadow
         receiveShadow
-        geometry={nodes.Cube001.geometry}
+        geometry={firstMesh.geometry}
         material={earthMaterial}
-        scale={[2, 2, 2]} // Increased scale for better visibility
+        scale={[2, 2, 2]}
         position={[0, 0, 0]}
       />
     </group>
