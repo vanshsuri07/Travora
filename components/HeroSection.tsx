@@ -88,14 +88,15 @@ const HeroSection = () => {
               className="flex flex-col sm:flex-row gap-4 mt-8 justify-center md:justify-start"
               variants={itemVariants}
             >
-               <button
-                  className="px-8 py-3 rounded-full font-bold text-white 
-                  bg-gradient-to-r from-blue-500 to-indigo-600 
-                  hover:from-blue-600 hover:to-indigo-700 
-                  transition-all duration-300 shadow-lg hover:scale-105"
-                >
-                  PLAN A TRIP
-                </button>
+              <button
+  className="px-6 py-3 rounded-full font-semibold text-white text-lg
+             bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500 // Adjusted base gradient
+             hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600 // More vibrant, but still harmonious hover
+             transform hover:scale-105 transition-transform duration-300
+             shadow-md hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300"
+>
+  Generate Trip
+</button>
             </motion.div>
           </motion.div>
 

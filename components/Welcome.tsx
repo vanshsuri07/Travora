@@ -22,14 +22,14 @@ const WelcomeSection = () => {
         </p>
         <Link to="/trip">
         <button
-          className="px-8 py-4 rounded-lg font-semibold text-white text-lg
-          bg-gradient-to-r from-blue-500 to-purple-500 
-          hover:from-purple-500 hover:to-pink-500 
-          transform hover:scale-105 transition-all duration-300 
-          shadow-lg hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-purple-300"
-        >
-          Generate My First Trip
-        </button>
+  className="px-6 py-3 rounded-full font-semibold text-white text-lg
+             bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500 // Adjusted base gradient
+             hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600 // More vibrant, but still harmonious hover
+             transform hover:scale-105 transition-transform duration-300
+             shadow-md hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300"
+>
+  Generate Trip
+</button>
         </Link>
       </div>
     </div>
