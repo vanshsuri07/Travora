@@ -19,6 +19,23 @@ export const getAllTrips = async (limit: number, offset: number) => {
     }
 }
 
+export const getTripsByUserId = async (userId: string) => {
+    const trips = await database.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.tripCollectionId,
+        [Query.equal("userId", userId)]
+    );
+
+    if(trips.total === 0) {
+        return { allTrips: [], total: 0 }
+    }
+
+    return {
+        allTrips: trips.documents,
+        total: trips.total,
+    }
+}
+
 export const getTripById = async (tripId: string) => {
     const trip = await database.getDocument(
         appwriteConfig.databaseId,
