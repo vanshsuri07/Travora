@@ -1,4 +1,4 @@
-import {type ActionFunctionArgs, data} from "react-router";
+import {type ActionFunctionArgs, redirect} from "react-router";
 import {GoogleGenerativeAI} from "@google/generative-ai";
 import {parseMarkdownToJson, parseTripData} from "~/lib/utlis";
 import {appwriteConfig, database} from "~/appwrite/client";
@@ -111,8 +111,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         //     }
         // )
 
-        return data({ id: result.$id })
+        return redirect('/users/home');
     } catch (e) {
         console.error('Error generating travel plan: ', e);
+        return redirect('/users/home');
     }
 }
