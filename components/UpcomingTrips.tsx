@@ -14,21 +14,30 @@ interface Trip {
     estimatedPrice?: number;
 }
 
+import { addToWishlist, getWishlistItem, removeFromWishlist } from '~/appwrite/trips';
+import { Models } from 'appwrite';
+
 interface UpcomingTripsProps {
     trips?: Trip[];
     onFetchTrips?: () => Promise<Trip[]>;
     refreshTrigger?: number; // Add this to trigger refetch from parent
+    userId?: string;
+    wishlist?: Models.Document[];
+    onWishlistChange?: () => void;
 }
 
 const UpcomingTrips: React.FC<UpcomingTripsProps> = ({ 
     trips: initialTrips = [], 
     onFetchTrips,
-    refreshTrigger = 0 
+    refreshTrigger = 0,
+    userId,
+    wishlist = [],
+    onWishlistChange
 }) => {
     const [trips, setTrips] = useState<Trip[]>(initialTrips);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [wishlistedTrips, setWishlistedTrips] = useState<string[]>([]);
+    const [wishlistedTrips, setWishlistedTrips] = useState<string[]>(wishlist.map(item => item.tripId));
     const [currentSlide, setCurrentSlide] = useState(0);
     const slideRef = useRef<HTMLDivElement>(null);
 
@@ -67,12 +76,27 @@ const UpcomingTrips: React.FC<UpcomingTripsProps> = ({
         }
     }, [initialTrips]);
 
-    const toggleWishlist = (tripId: string) => {
-        setWishlistedTrips(prev =>
-            prev.includes(tripId)
-                ? prev.filter(id => id !== tripId)
-                : [...prev, tripId]
-        );
+    const toggleWishlist = async (tripId: string) => {
+        if (!userId) {
+            console.error("User not logged in");
+            return;
+        }
+
+        const wishlistItem = await getWishlistItem(tripId, userId);
+
+        if (wishlistItem) {
+            const success = await removeFromWishlist(wishlistItem.$id);
+            if (success) {
+                setWishlistedTrips(prev => prev.filter(id => id !== tripId));
+                onWishlistChange?.();
+            }
+        } else {
+            const newItem = await addToWishlist(tripId, userId);
+            if (newItem) {
+                setWishlistedTrips(prev => [...prev, tripId]);
+                onWishlistChange?.();
+            }
+        }
     };
 
     // Calculate how many cards to show per slide based on screen size
