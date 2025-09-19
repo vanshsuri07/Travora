@@ -3,7 +3,8 @@ import { getAllTrips, getWishlist } from "~/appwrite/trips";
 import { getUser } from "~/appwrite/auth";
 import UpcomingTrips from "../../../components/UpcomingTrips";
 import Wishlist from "../../../components/Wishlist";
-import { Models } from "appwrite";
+import WelcomeSection from "../../../components/Welcome";
+import type { Models } from "appwrite";
 
 const Home = () => {
   const [user, setUser] = useState<Models.Document | null>(null);
@@ -18,7 +19,7 @@ const Home = () => {
       try {
         setLoading(true);
         const currentUser = await getUser();
-        if (currentUser) {
+        if (currentUser && 'email' in currentUser) {
           setUser(currentUser);
           const [tripsData, wishlistData] = await Promise.all([
             getAllTrips(10, 0),
@@ -51,9 +52,10 @@ const Home = () => {
 
   return (
     <div className="space-y-8">
+      <WelcomeSection />
       <UpcomingTrips
-        trips={trips}
-        onFetchTrips={() => getAllTrips(10, 0).then(data => data.allTrips)}
+        trips={trips as any}
+        onFetchTrips={() => getAllTrips(10, 0).then(data => data.allTrips) as any}
         refreshTrigger={refreshTrigger}
         userId={user?.$id}
         wishlist={wishlist}

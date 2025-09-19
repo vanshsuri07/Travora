@@ -17,7 +17,7 @@ const UserLayout = () => {
     <div>
       <WelcomeSection />
       <UpcomingTrips trips={transformedTrips} />
-      <Wishlist />
+      <Wishlist wishlist={[]} />
     </div>
   )
 }

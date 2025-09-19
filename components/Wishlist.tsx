@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getTripById } from '~/appwrite/trips';
 import TripCard from './TripCard';
-import { Models } from 'appwrite';
+import type { Models } from 'appwrite';
 
 interface WishlistProps {
   wishlist: Models.Document[];

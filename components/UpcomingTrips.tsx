@@ -15,7 +15,7 @@ interface Trip {
 }
 
 import { addToWishlist, getWishlistItem, removeFromWishlist } from '~/appwrite/trips';
-import { Models } from 'appwrite';
+import type { Models } from 'appwrite';
 
 interface UpcomingTripsProps {
     trips?: Trip[];
