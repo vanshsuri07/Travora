@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import UpcomingTrips from 'components/UpcomingTrips';
 import WelcomeSection from 'components/Welcome';
 import Wishlist from 'components/Wishlist';
@@ -91,7 +91,7 @@ const UserLayout = () => {
 
     loadUserTrips();
   }, []);
-  const toggleWishlist = async (tripId: string) => {
+  const toggleWishlist = useCallback(async (tripId: string) => {
     const newWishlist = wishlist.includes(tripId)
       ? wishlist.filter(id => id !== tripId)
       : [...wishlist, tripId];
@@ -101,7 +101,7 @@ const UserLayout = () => {
     if (user) {
       await updateUserWishlist(user.accountId, newWishlist);
     }
-  };
+  }, [user, wishlist]);
 
   const wishlistedTrips = [
     ...userTrips,
