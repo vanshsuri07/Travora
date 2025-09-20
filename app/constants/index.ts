@@ -186,6 +186,15 @@ export const allTrips = [{
       travelStyle: "Friends",
       estimatedPrice: "$4,000",
     },
+     {
+      id: 4,
+      name: "Culture Refresh",
+      imageUrls: ["/assets/images/card-img-6.png"],
+      itinerary: [{ location: "Thailand" }],
+      tags: ["Historical", "Culture"],
+      travelStyle: "Friends",
+      estimatedPrice: "$4,000",
+    },
     ];
 export const users = [
   {

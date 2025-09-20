@@ -14,7 +14,7 @@ import {
 } from "@syncfusion/ej2-react-charts";
 import {ColumnDirective, ColumnsDirective, GridComponent, Inject} from "@syncfusion/ej2-react-grids";
 import {tripXAxis, tripyAxis, userXAxis, useryAxis} from "~/constants";
-import {redirect} from "react-router";
+
 
 export const clientLoader = async () => {
     const [
@@ -121,7 +121,7 @@ const Dashboard = ({ loaderData }: Route.ComponentProps) => {
                             name={trip.name!}
                             imageUrl={trip.imageUrls[0]}
                             location={trip.itinerary?.[0]?.location ?? ''}
-                            tags={[trip.interests!, trip.travelStyle!]}
+                             tags={trip.travelStyle ? [trip.travelStyle] : []}
                             price={trip.estimatedPrice!}
                         />
                     ))}

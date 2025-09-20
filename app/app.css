@@ -12,6 +12,15 @@
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
   }
 }
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
 @theme {
   --font-figtree: "Figtree", sans-serif;
   --font-inter: "Inter", sans-serif;
