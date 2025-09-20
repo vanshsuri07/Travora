@@ -3,7 +3,7 @@ import UpcomingTrips from 'components/UpcomingTrips';
 import WelcomeSection from 'components/Welcome';
 import Wishlist from 'components/Wishlist';
 import RecommendedTrips from '../../../components/RecommendedTrips';
-import { getUserTrips, getAllTrips } from '~/appwrite/trips'; // Added getAllTrips import
+import { getUserTrips, getAllTrips, updateUserWishlist } from '~/appwrite/trips'; // Added getAllTrips import
 import { getUser } from '~/appwrite/auth';
 import { parseTripData } from '~/lib/utlis';
 import { allTrips } from '~/constants'; // Keep this for RecommendedTrips
@@ -35,6 +35,7 @@ const UserLayout = () => {
       }
       
       setUser(currentUser);
+      setWishlist(currentUser.wishlist || []);
       
       // TEMPORARY: Show all trips instead of user-specific trips
       // This is just to test that the component works
@@ -90,12 +91,16 @@ const UserLayout = () => {
 
     loadUserTrips();
   }, []);
-  const toggleWishlist = (tripId: string) => {
-    setWishlist(prev =>
-      prev.includes(tripId)
-        ? prev.filter(id => id !== tripId)
-        : [...prev, tripId]
-    );
+  const toggleWishlist = async (tripId: string) => {
+    const newWishlist = wishlist.includes(tripId)
+      ? wishlist.filter(id => id !== tripId)
+      : [...wishlist, tripId];
+
+    setWishlist(newWishlist);
+
+    if (user) {
+      await updateUserWishlist(user.accountId, newWishlist);
+    }
   };
 
   const wishlistedTrips = [
