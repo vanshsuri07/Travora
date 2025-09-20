@@ -13,6 +13,7 @@ const UserLayout = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [wishlist, setWishlist] = useState<string[]>([]);
 
   // Keep the transformed trips for RecommendedTrips (demo data)
   const transformedTrips = allTrips.map(trip => ({
@@ -89,7 +90,18 @@ const UserLayout = () => {
 
     loadUserTrips();
   }, []);
+  const toggleWishlist = (tripId: string) => {
+    setWishlist(prev =>
+      prev.includes(tripId)
+        ? prev.filter(id => id !== tripId)
+        : [...prev, tripId]
+    );
+  };
 
+  const wishlistedTrips = [
+    ...userTrips,
+    ...transformedTrips,
+  ].filter(trip => wishlist.includes(trip.id));
   return (
     <div>
       <WelcomeSection />
@@ -115,13 +127,18 @@ const UserLayout = () => {
             <UpcomingTrips 
               trips={userTrips} 
               onFetchTrips={fetchUserTrips}
+              wishlist={wishlist}
+              toggleWishlist={toggleWishlist}
             />
           )}
         </section>
 
-        <section>
+        <section id="wishlist">
           <h2 className="text-2xl font-semibold mb-4">Wishlist</h2>
-          <Wishlist />
+          <Wishlist
+            wishlistedTrips={wishlistedTrips}
+            toggleWishlist={toggleWishlist}
+          />
         </section>
 
         <section>
