@@ -4,64 +4,76 @@ import { motion } from 'framer-motion';
 import { FaMapMarkerAlt, FaChevronDown } from 'react-icons/fa';
 
 // Framer Motion animation variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.3,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.6,
-      ease: "easeOut",
-    },
-  },
-};
-
+const styles = `
+  @keyframes kenburns-top {
+    0% {
+      transform: scale(1) translateY(0);
+      transform-origin: 50% 16%;
+    }
+    100% {
+      transform: scale(1.15) translateY(-10px);
+      transform-origin: top;
+    }
+  }
+  .animate-kenburns {
+    animation: kenburns-top 10s ease-out both reverse;
+  }
+  
+  @keyframes bounce-slow {
+    0%, 100% {
+      transform: translateY(-25%);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+  }
+  .animate-bounce-slow {
+    animation: bounce-slow 2s infinite;
+  }
+`;
 const WelcomeSection = () => {
   return (
-    <div className="relative h-screen flex items-center justify-center font-poppins text-white overflow-hidden">
+   <section className="relative w-full h-screen flex items-center justify-center text-center overflow-hidden">
+      {/* Background Image */}
+      
       {/* Background Image with Ken Burns Effect & Dark Overlay */}
       <div
         className="absolute inset-0 bg-cover bg-center z-0 animate-kenburns"
         style={{ backgroundImage: `url('/assets/images/welcome.png')` }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/40 to-transparent"></div>
-      </div>
+      />
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/30 via-transparent to-black/0"></div>
+      
 
       {/* Animated Content */}
-      <motion.div
-        className="relative z-10 text-center p-6 max-w-4xl mx-auto flex flex-col items-center"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
+      
+       <div className="relative z-20 flex flex-col items-center justify-center p-4">
+      
         <motion.h1
-          className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight mb-6 shadow-text bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-300"
-          variants={itemVariants}
+         initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="text-5xl md:text-7xl  font-bold leading-tight mb-6 shadow-text bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-300"
         >
           Your Next Adventure, Intelligently Crafted
         </motion.h1>
         
-        <motion.p 
-          className="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl"
-          variants={itemVariants}
+        <motion.p
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+          className="text-lg md:text-xl text-white drop-shadow-lg mb-10 max-w-2xl"
+
         >
           Stop planning, start dreaming. Tell us where you want to go.
         </motion.p>
 
-        <motion.div variants={itemVariants} className="w-full max-w-2xl">
-          <form className="relative flex flex-col sm:flex-row items-center gap-4 w-full">
-            <div className="relative w-full">
+       <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+        >
               <Link to="/user/trip">
               <button
                 type="submit"
@@ -74,22 +86,26 @@ const WelcomeSection = () => {
                 Generate Trip
               </button>
               </Link>
-            </div>
           
-          </form>
         </motion.div>
-      </motion.div>
+      </div>
 
       {/* Animated Scroll Down Indicator */}
-      <motion.div 
-        className="absolute bottom-10 text-white"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 1 }}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          repeat: Infinity,
+          repeatType: "reverse",
+          duration: 1.5,
+          ease: "easeInOut",
+          delay: 1, // Start animation after other elements load
+        }}
+        className="absolute bottom-10 z-20"
       >
         <FaChevronDown size={24} className="animate-bounce-slow" />
       </motion.div>
-    </div>
+    </section>
   );
 };
 
