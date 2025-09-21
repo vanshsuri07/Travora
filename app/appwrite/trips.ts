@@ -134,3 +134,49 @@ export const updateUserWishlist = async (userId: string, wishlist: string[]) => 
         return null;
     }
 };
+
+export const createBooking = async (tripId: string, userId: string) => {
+    try {
+        const booking = await database.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.bookingCollectionId,
+            ID.unique(),
+            {
+                tripId,
+                userId,
+            }
+        );
+        return booking;
+    } catch (error) {
+        console.error('Error creating booking:', error);
+        return null;
+    }
+}
+
+// Add this to your getUserBookings function temporarily
+export const getUserBookings = async (userId: string) => {
+    try {
+        console.log('🔍 getUserBookings called with userId:', userId);
+        
+        // First, get ALL bookings to see what's in the collection
+        const allBookings = await database.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.bookingCollectionId,
+            [] // No filters - get everything
+        );
+        console.log('🗃️ ALL bookings in collection:', allBookings.documents);
+        
+        // Then try your original query
+        const bookings = await database.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.bookingCollectionId,
+            [Query.equal("userId", userId)]
+        );
+        console.log('📋 Filtered bookings:', bookings.documents);
+        
+        return bookings.documents;
+    } catch (error) {
+        console.error('💥 Error fetching user bookings:', error);
+        return [];
+    }
+};

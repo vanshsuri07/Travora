@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router"; // Corrected import for react-router v6+
+import { Link, redirect, useLocation } from "react-router"; // Corrected import for react-router v6+
 import {
   ChipDirective,
   ChipListComponent,
@@ -26,14 +26,14 @@ const TripCard = ({
 }: TripCardProps) => {
   const path = useLocation();
 
-  const handleBookNow = (e: React.MouseEvent) => {
-    e.preventDefault(); // Stop Link navigation
-    e.stopPropagation(); // Prevent bubbling
-    console.log("Booking trip:", id);
+  // const handleBookNow = (e: React.MouseEvent) => {
+  //   e.preventDefault(); // Stop Link navigation
+  //   e.stopPropagation(); // Prevent bubbling
+  //   console.log("Booking trip:", id);
 
-    // TODO: replace with Stripe checkout call
-    alert(`Proceeding to payment for trip: ${name}`);
-  };
+  //   // TODO: replace with Stripe checkout call
+  //   // Redirect to checkout page
+  // };
 
   return (
     <Link
@@ -89,12 +89,14 @@ const TripCard = ({
 
       <article className="flex items-center justify-between p-4 border-t border-gray-100 bg-gray-50">
          <article className="tripCard-pill">{price}</article>
-        <button
-          onClick={handleBookNow}
-          className="px-5 py-2 rounded-full bg-black text-white text-sm font-semibold  focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg"
-        >
-          Book Now
-        </button>
+         <Link to={`/user/trip/${id}`}>
+  <button
+    onClick={() => console.log("Booking trip:", id)}
+    className="px-5 py-2 rounded-full bg-black text-white text-sm font-semibold focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg"
+  >
+    Book Now
+  </button>
+</Link>
       </article>
     </Link>
   );

@@ -7,9 +7,15 @@ export default [
   route("sign-in", "routes/root/sign-in.tsx"),
    // optional if you add registration
   route("api/create-trip", "routes/api/create-trip.ts"),
+  route("api/checkout", "routes/api/checkout.ts"),
 
   // ----------------------------
-  // ADMIN DASHBOARD
+  // PAYMENT ROUTES
+  // ----------------------------
+  route("payment/success", "routes/payment/success/page.tsx"),
+  route("payment/cancel", "routes/payment/cancel/page.tsx"),
+
+  // -------------
   // ----------------------------
   layout("routes/admin/admin-layout.tsx", [
     route("dashboard", "routes/admin/dashboard.tsx"),
@@ -23,15 +29,11 @@ export default [
   // PUBLIC WEBSITE (Landing + Users)
   // ----------------------------
   layout("routes/root/page-layout.tsx", [
-    // Landing page (homepage)
     index("routes/root/page.tsx"),
-
-    // User travel pages
+    
     route("user", "routes/users/user-layout.tsx"),
     route("user/trip", "routes/users/create-trip.tsx"),
+    route("user/my-trip", "routes/users/my-trip.tsx"),  // <- Outside user layout
     route("user/trip/:tripId", "routes/users/trip-detail.tsx"),
-
-    // // Optional: user profile/settings
-    // route("profile", "routes/users/profile.tsx"),
-  ]),
+]),
 ] satisfies RouteConfig;

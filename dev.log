@@ -2,7 +2,3 @@
 > dev
 > cross-env NODE_OPTIONS="--import ./instrument.server.mjs" react-router dev
 
-Port 5173 is in use, trying another one...
-Port 5174 is in use, trying another one...
-  ➜  Local:   http://localhost:5175/
-  ➜  Network: use --host to expose
