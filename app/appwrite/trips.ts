@@ -120,7 +120,7 @@ export const updateUserWishlist = async (userId: string, wishlist: string[]) => 
         const documentId = user.documents[0].$id;
 
         // Now, update the user document with the new wishlist
-        const updatedUser = await database.updateDocument(
+        const updatedUser = await database.updateDocument(.
             appwriteConfig.databaseId,
             appwriteConfig.userCollectionId,
             documentId,
@@ -134,3 +134,21 @@ export const updateUserWishlist = async (userId: string, wishlist: string[]) => 
         return null;
     }
 };
+
+export const createBooking = async (tripId: string, userId: string) => {
+    try {
+        const booking = await database.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.bookingCollectionId,
+            ID.unique(),
+            {
+                tripId,
+                userId,
+            }
+        );
+        return booking;
+    } catch (error) {
+        console.error('Error creating booking:', error);
+        return null;
+    }
+}

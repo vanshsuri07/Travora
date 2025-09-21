@@ -24,6 +24,8 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     }
 }
 
+import { loadStripe } from '@stripe/stripe-js';
+
 const TripDetail = ({ loaderData }: Route.ComponentProps) => {
     const imageUrls = loaderData?.trip?.imageUrls || [];
     const tripData = parseTripData(loaderData?.trip?.tripDetails);
@@ -34,6 +36,39 @@ const TripDetail = ({ loaderData }: Route.ComponentProps) => {
         description, bestTimeToVisit, weatherInfo, country
     } = tripData || {};
     const allTrips = loaderData.allTrips as Trip[] | [];
+
+    const handleBooking = async () => {
+        const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+
+        if (!stripe) {
+            console.error("Stripe.js failed to load.");
+            return;
+        }
+
+        const response = await fetch('/api/checkout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name,
+                description,
+                images: imageUrls,
+                price: estimatedPrice,
+                tripId: loaderData?.trip?.$id,
+            }),
+        });
+
+        const session = await response.json();
+
+        const result = await stripe.redirectToCheckout({
+            sessionId: session.sessionId,
+        });
+
+        if (result.error) {
+            console.error(result.error.message);
+        }
+    };
 
     const pillItems = [
         { text: travelStyle, bg: '!bg-pink-50 !text-pink-500' },
@@ -128,7 +163,7 @@ const TripDetail = ({ loaderData }: Route.ComponentProps) => {
   <div className="text-right flex-shrink-0">
   <h2 className="text-4xl font-bold text-gray-900">{estimatedPrice}</h2>
   <button
-    onClick={() => alert(`Proceeding to book ${name}`)}
+    onClick={handleBooking}
     className="mt-3 w-full px-8 py-3 rounded-lg bg-blue-600 text-white font-semibold shadow-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-300"
   >
     Book Now
