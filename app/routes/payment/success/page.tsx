@@ -125,7 +125,7 @@ const PaymentSuccessPage = () => {
                         Go to Dashboard
                     </Link>
                     <Link 
-                        to="/user/mytrip" 
+                        to="/user/my-trip" 
                         className="px-8 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105"
                     >
                         View My Trips
