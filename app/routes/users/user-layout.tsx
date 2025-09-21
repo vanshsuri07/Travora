@@ -1,18 +1,38 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { Navigate } from 'react-router';
+import { motion } from 'framer-motion';
 import UpcomingTrips from 'components/UpcomingTrips';
 import WelcomeSection from 'components/Welcome';
 import Wishlist from 'components/Wishlist';
 import RecommendedTrips from '../../../components/RecommendedTrips';
-import { getUserTrips, getAllTrips } from '~/appwrite/trips'; // Added getAllTrips import
+import { getUserTrips, getAllTrips, updateUserWishlist } from '~/appwrite/trips';
 import { getUser } from '~/appwrite/auth';
 import { parseTripData } from '~/lib/utlis';
-import { allTrips } from '~/constants'; // Keep this for RecommendedTrips
+import { allTrips } from '~/constants';
+import LayoutSkeleton from 'components/LayoutSkeleton';
+
+const sectionVariants = {
+hidden: { opacity: 0, y: 50 },
+visible: {
+  opacity: 1,
+  y: 0,
+  transition: {
+    duration: 0.8,
+    ease: [0.6, -0.05, 0.01, 0.99] as const // A nice easing curve
+  }
+}
+};
+
 
 const UserLayout = () => {
   const [userTrips, setUserTrips] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+  const [wishlist, setWishlist] = useState<string[]>([]);
+  const [authChecked, setAuthChecked] = useState(false);
+  
+
 
   // Keep the transformed trips for RecommendedTrips (demo data)
   const transformedTrips = allTrips.map(trip => ({
@@ -24,45 +44,21 @@ const UserLayout = () => {
   }));
 
   // Function to fetch user's trips
-  const fetchUserTrips = async () => {
+  const fetchUserTrips = async (currentUser) => {
     try {
-      const currentUser = await getUser();
-      console.log('Current user:', currentUser);
+      console.log('Fetching trips for user:', currentUser);
       
-      if (!currentUser) {
-        throw new Error('User not authenticated');
-      }
-      
-      setUser(currentUser);
-      
-      // TEMPORARY: Show all trips instead of user-specific trips
-      // This is just to test that the component works
-      // Remove this and uncomment the getUserTrips code below once you fix the userId issue
-      // const response = await getAllTrips(10, 0);
-      // console.log('All trips response:', response);
-      
-      // const formattedTrips = response.allTrips.map(({ $id, tripDetails, imageUrls }) => {
-      //   console.log('Processing trip:', { $id, tripDetails, imageUrls });
-      //   return {
-      //     $id,
-      //     id: $id,
-      //     ...parseTripData(tripDetails),
-      //     imageUrls: imageUrls ?? []
-      //   };
-      // });
-      
-      // console.log('Formatted trips:', formattedTrips);
-      // return formattedTrips;
-      
-      // UNCOMMENT THIS WHEN USERID IS FIXED:
+      // Get user's trips
       const response = await getUserTrips(currentUser.accountId, 10, 0);
       console.log('User trips response:', response);
+      
       const formattedTrips = response.userTrips.map(({ $id, tripDetails, imageUrls }) => ({
         $id,
         id: $id,
         ...parseTripData(tripDetails),
         imageUrls: imageUrls ?? []
       }));
+      
       return formattedTrips;
       
     } catch (error) {
@@ -71,64 +67,143 @@ const UserLayout = () => {
     }
   };
 
-  // Load trips on component mount
+  // Single useEffect for authentication and data loading
   useEffect(() => {
-    const loadUserTrips = async () => {
+    const initializeUserData = async () => {
       try {
         setLoading(true);
         setError(null);
-        const trips = await fetchUserTrips();
+        
+        // Check authentication
+        const currentUser = await getUser();
+        console.log('Current user:', currentUser);
+        
+        if (!currentUser) {
+          setAuthChecked(true);
+          setLoading(false);
+          return; // Will trigger redirect
+        }
+        
+        // Set user data
+        setUser(currentUser);
+        setWishlist(currentUser.wishlist || []);
+        setAuthChecked(true);
+        
+        // Fetch user trips
+        const trips = await fetchUserTrips(currentUser);
         setUserTrips(trips);
+        
       } catch (err) {
-        setError(err.message || 'Failed to load trips');
-        console.error('Error loading user trips:', err);
+        console.error('Error initializing user data:', err);
+        setError(err.message || 'Failed to load user data');
+        setAuthChecked(true);
       } finally {
         setLoading(false);
       }
     };
 
-    loadUserTrips();
+    initializeUserData();
   }, []);
 
+  const toggleWishlist = useCallback(async (tripId: string) => {
+    if (!user) return;
+    
+    const newWishlist = wishlist.includes(tripId)
+      ? wishlist.filter(id => id !== tripId)
+      : [...wishlist, tripId];
+
+    setWishlist(newWishlist);
+
+    try {
+      await updateUserWishlist(user.accountId, newWishlist);
+    } catch (error) {
+      console.error('Error updating wishlist:', error);
+      // Revert wishlist on error
+      setWishlist(wishlist);
+    }
+  }, [user, wishlist]);
+
+  const refetchTrips = async () => {
+    if (!user) return;
+    
+    try {
+      setError(null);
+      const trips = await fetchUserTrips(user);
+      setUserTrips(trips);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to refresh trips');
+      console.log(err instanceof Error ? err.message : 'Unknown error');
+    }
+  };
+
+  const wishlistedTrips = [
+    ...userTrips,
+    ...transformedTrips,
+  ].filter(trip => wishlist.includes(trip.id));
+
+  // Show loading while checking authentication
+   if (loading) {
+    return <LayoutSkeleton />;
+  }
+
+  // Redirect to sign-in if not authenticated
+  if (!user) {
+    return <Navigate to="/sign-in" replace />;
+  }
+
   return (
-    <div>
+    <div className='bg-white'>
       <WelcomeSection />
-      <div className="px-6 py-8 space-y-12 bg-gray-50 min-h-screen">
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">Upcoming Trips</h2>
-          {loading ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading your trips...</p>
-            </div>
-          ) : error ? (
-            <div className="text-center py-8">
-              <p className="text-red-600 mb-4">{error}</p>
-              <button 
-                onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
-              >
-                Try Again
-              </button>
-            </div>
-          ) : (
+
+      <motion.div
+        className="px-4 sm:px-6 lg:px-5 py-10 space-y-5"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >  
+       <motion.section
+          variants={sectionVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+        >
+          
             <UpcomingTrips 
               trips={userTrips} 
-              onFetchTrips={fetchUserTrips}
+              onFetchTrips={refetchTrips}
+              wishlist={wishlist}
+              onToggleWishlist={toggleWishlist}
             />
-          )}
-        </section>
+        </motion.section>
 
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">Wishlist</h2>
-          <Wishlist />
-        </section>
+        <motion.section
+  id="wishlist"
+  variants={sectionVariants}
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true, amount: 0.1 }}
+>
+ 
+  <Wishlist
+    wishlistedTrips={wishlistedTrips}
+    toggleWishlist={toggleWishlist}
+  />
+</motion.section>
 
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">Recommended Trips</h2>
-          <RecommendedTrips trips={transformedTrips} />
-        </section>
-      </div>
+        <motion.section
+          variants={sectionVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+        >
+          
+          <RecommendedTrips 
+            trips={transformedTrips} 
+            wishlist={wishlist}
+            onToggleWishlist={toggleWishlist}
+          />
+        </motion.section>
+      </motion.div>
     </div>
   );
 };

@@ -117,16 +117,25 @@ const TripDetail = ({ loaderData }: Route.ComponentProps) => {
                     </ul>
                 </section>
 
-                <section className="title">
-                    <article>
-                        <h3>
-                            {duration}-Day {country} {travelStyle} Trip
-                        </h3>
-                        <p>{budget}, {groupType} and {interests}</p>
-                    </article>
+                <section className="title flex items-center justify-between">
+  <article>
+    <h3>
+      {duration}-Day {country} {travelStyle} Trip
+    </h3>
+    <p>{budget}, {groupType} and {interests}</p>
+  </article>
 
-                    <h2>{estimatedPrice}</h2>
-                </section>
+  <div className="text-right flex-shrink-0">
+  <h2 className="text-4xl font-bold text-gray-900">{estimatedPrice}</h2>
+  <button
+    onClick={() => alert(`Proceeding to book ${name}`)}
+    className="mt-3 w-full px-8 py-3 rounded-lg bg-blue-600 text-white font-semibold shadow-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-300"
+  >
+    Book Now
+  </button>
+</div>
+</section>
+
 
                 <p className="text-sm md:text-lg font-normal text-dark-400">{description}</p>
 

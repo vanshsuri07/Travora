@@ -95,7 +95,7 @@ const HeroSection = () => {
              transform hover:scale-105 transition-transform duration-300
              shadow-md hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300"
 >
-  Generate Trip
+  Plan a Trip
 </button>
             </motion.div>
           </motion.div>

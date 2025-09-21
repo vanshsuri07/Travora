@@ -556,3 +556,34 @@ body {
   top: 45px;
   right: 40px;
 }
+
+/* For the cinematic background zoom effect */
+@keyframes kenburns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.1) translate(-1%, 2%);
+  }
+}
+
+.animate-kenburns {
+  animation: kenburns 20s ease-out alternate-reverse infinite;
+}
+
+/* For the bouncing scroll-down arrow */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-15px);
+  }
+  60% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-bounce-slow {
+  animation: bounce 2s infinite;
+}

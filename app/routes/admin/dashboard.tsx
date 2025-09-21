@@ -14,6 +14,7 @@ import {
 } from "@syncfusion/ej2-react-charts";
 import {ColumnDirective, ColumnsDirective, GridComponent, Inject} from "@syncfusion/ej2-react-grids";
 import {tripXAxis, tripyAxis, userXAxis, useryAxis} from "~/constants";
+import { Link } from "react-router";
 
 
 export const clientLoader = async () => {
@@ -87,6 +88,14 @@ const Dashboard = ({ loaderData }: Route.ComponentProps) => {
                 title={`Welcome ${user?.name ?? 'Guest'} 👋`}
                 description="Track activity, trends and popular destinations in real time"
             />
+           <div className="absolute top-8 right-8">
+  <Link
+    to="/user"
+    className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 shadow-md"
+  >
+    Switch to user
+  </Link>
+</div>
 
             <section className="flex flex-col gap-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">

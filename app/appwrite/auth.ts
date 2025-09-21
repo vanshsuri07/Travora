@@ -75,11 +75,28 @@ export const loginWithGoogle = async () => {
 
 export const logoutUser = async () => {
     try {
+        console.log("Attempting to delete Appwrite session...");
+        
+        // Delete current session from Appwrite
         await account.deleteSession("current");
+        
+        console.log("Appwrite session deleted successfully");
+        return { success: true };
+        
     } catch (error) {
-        console.error("Error during logout:", error);
+        console.error("Error during Appwrite logout:", error);
+        
+        // Check if it's a session not found error (user might already be logged out)
+        if (error.code === 401 || error.type === 'user_unauthorized') {
+            console.log("Session was already expired/invalid",error);
+            return { success: true, message: "Session was already expired" };
+        }
+        
+        // For other errors, still return so we can continue with local cleanup
+        return { success: false, error: error.message };
     }
 };
+    
 
 export const getUser = async () => {
     try {
@@ -91,7 +108,7 @@ export const getUser = async () => {
             appwriteConfig.userCollectionId,
             [
                 Query.equal("accountId", user.$id),
-                Query.select(["name", "email", "imageUrl", "joinedAt", "accountId"]),
+                Query.select(["name", "email", "imageUrl", "joinedAt", "accountId", "wishlist"]),
             ]
         );
 
