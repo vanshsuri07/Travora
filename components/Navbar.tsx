@@ -167,7 +167,7 @@ const Navbar = ({ onLogout, user }: NavbarProps) => {
 
   const userLinks = [
     { href: "/user", label: "Home" },
-    { href: "/user#upcoming-trips", label: "My Trips" },
+    { href: "/user/my-trip", label: "My Trips" },
     { href: "/user#wishlist", label: "Wishlist" },
     { href: "/contact", label: "Contact" },
   ];

@@ -44,17 +44,19 @@ const TripDetail = ({ loaderData }: Route.ComponentProps) => {
             console.error("Stripe.js failed to load.");
             return;
         }
+       console.log("Booking price sent to backend:", estimatedPrice);
 
         const response = await fetch('/api/checkout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
+            
             body: JSON.stringify({
                 name,
                 description,
                 images: imageUrls,
-                price: estimatedPrice,
+                 price: estimatedPrice?.replace(/\$/g, "") || "0",
                 tripId: loaderData?.trip?.$id,
             }),
         });
