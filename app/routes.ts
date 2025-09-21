@@ -28,8 +28,8 @@ export default [
 
     // User travel pages
     route("user", "routes/users/user-layout.tsx"),
-    route("trip", "routes/users/create-trip.tsx"),
-    route("trip/:tripId", "routes/users/trip-detail.tsx"),
+    route("user/trip", "routes/users/create-trip.tsx"),
+    route("user/trip/:tripId", "routes/users/trip-detail.tsx"),
 
     // // Optional: user profile/settings
     // route("profile", "routes/users/profile.tsx"),

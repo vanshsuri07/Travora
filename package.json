@@ -27,7 +27,7 @@
     "appwrite": "^17.0.2",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
-    "framer-motion": "^12.23.13",
+    "framer-motion": "^12.23.16",
     "isbot": "^5.1.17",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
