@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router"; // Use react-router-dom for modern React
 import { motion } from "framer-motion";
 import TripCard from "./TripCard";

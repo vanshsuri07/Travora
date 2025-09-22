@@ -136,10 +136,10 @@ const MyTripsPage = () => {
                             exit={{ opacity: 0, y: -30 }}
                             className="text-center py-16 px-6 bg-white rounded-2xl shadow-sm"
                         >
-                            <img src="/assets/icons/adventure.svg" alt="A suitcase and a globe" className="mx-auto h-32 w-32 mb-6" />
+                            <img src="/assets/images/adventure.png" alt="A suitcase and a globe" className="mx-auto h-32 w-32 mb-6" />
                             <h2 className="text-3xl font-bold text-gray-800">Your Adventure Awaits!</h2>
                             <p className="mt-3 text-lg text-gray-500 max-w-md mx-auto">It looks like your passport is ready for a new stamp. Let's find your next destination.</p>
-                            <Link to="/">
+                            <Link to="/user/trip">
                                 <button className="mt-8 px-8 py-3 bg-blue-600 text-white font-semibold rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105">
                                     Explore Trips
                                 </button>

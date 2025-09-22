@@ -6,7 +6,7 @@ import { getUser, logoutUser } from '~/appwrite/auth'; // Import both functions
 
 const PageLayout = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load user data on component mount
@@ -35,7 +35,7 @@ const PageLayout = () => {
     loadUser();
   }, []);
 
-  const handleLogin = (user) => {
+  const handleLogin = (user: User) => {
     setCurrentUser(user);
     setIsAuthenticated(true);
   };

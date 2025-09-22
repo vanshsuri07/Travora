@@ -30,7 +30,7 @@ export async function clientLoader() {
       }
       
       // If status is neither admin nor user, redirect to home
-      return redirect('/');
+      return redirect('/user');
     }
     
     console.log('Admin user authenticated:', existingUser);

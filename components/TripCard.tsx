@@ -36,12 +36,8 @@ const TripCard = ({
   // };
 
   return (
-    <Link
-      to={
-        path.pathname === "/" || path.pathname.startsWith("/travel")
-          ? `/travel/${id}`
-          : `/user/trip/${id}`
-      }
+    <div
+  
       className="trip-card group overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 flex flex-col"
     >
       <div className="relative">
@@ -87,18 +83,20 @@ const TripCard = ({
         </ChipListComponent>
       </div>
 
-      <article className="flex items-center justify-between p-4 border-t border-gray-100 bg-gray-50">
-         <article className="tripCard-pill">{price}</article>
-         <Link to={`/user/trip/${id}`}>
-  <button
-    onClick={() => console.log("Booking trip:", id)}
-    className="px-5 py-2 rounded-full bg-black text-white text-sm font-semibold focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg"
-  >
-    Book Now
-  </button>
-</Link>
-      </article>
+       <article className="flex items-center justify-between p-4 border-t border-gray-100 bg-gray-50">
+    <div className="tripCard-pill">{price}</div>
+     <Link
+  to={path.pathname === "/" || path.pathname.startsWith("/travel")
+    ? `/travel/${id}`
+    : `/user/trip/${id}`}
+    
+      className="px-5 py-2 rounded-full bg-black text-white ..."
+    >
+      Book Now
     </Link>
+  </article>
+</div>
+   
   );
 };
 
