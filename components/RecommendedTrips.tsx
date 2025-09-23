@@ -3,7 +3,6 @@ import TripCard from "./TripCard";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 
-// Define the Trip type for better type safety
 interface Trip {
   id: string | number;
   name: string;
@@ -16,12 +15,10 @@ interface Trip {
 
 interface RecommendedTripsProps {
   trips: Trip[];
-  
   wishlist: string[];
   onToggleWishlist: (tripId: string) => void;
 }
 
-// Animation variants for the section
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
   visible: {
@@ -30,25 +27,28 @@ const sectionVariants = {
     transition: {
       duration: 0.8,
       ease: [0.6, -0.05, 0.01, 0.99] as const,
-    }
-  }
+    },
+  },
 };
 
-const RecommendedTrips: React.FC<RecommendedTripsProps> = ({ trips }) => {
+const RecommendedTrips: React.FC<RecommendedTripsProps> = ({
+  trips,
+  wishlist,
+  onToggleWishlist,
+}) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
-  // Scroll function remains the same
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
       const { clientWidth } = scrollRef.current;
-      const scrollAmount = direction === "left" ? -(clientWidth / 2) : (clientWidth / 2); // Scroll half a screen for a nicer feel
+      const scrollAmount =
+        direction === "left" ? -(clientWidth / 2) : clientWidth / 2;
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
 
-  // Effect for checking scroll buttons remains the same
   const checkScrollButtons = () => {
     if (scrollRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
@@ -58,7 +58,6 @@ const RecommendedTrips: React.FC<RecommendedTripsProps> = ({ trips }) => {
   };
 
   useEffect(() => {
-    // A small delay to ensure the DOM is fully painted before checking
     const timer = setTimeout(() => checkScrollButtons(), 100);
     const currentRef = scrollRef.current;
 
@@ -77,7 +76,7 @@ const RecommendedTrips: React.FC<RecommendedTripsProps> = ({ trips }) => {
   }
 
   return (
-    <motion.section 
+    <motion.section
       className="py-16 bg-white"
       variants={sectionVariants}
       initial="hidden"
@@ -85,7 +84,6 @@ const RecommendedTrips: React.FC<RecommendedTripsProps> = ({ trips }) => {
       viewport={{ once: true, amount: 0.1 }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* --- Redesigned Header --- */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight">
@@ -113,13 +111,17 @@ const RecommendedTrips: React.FC<RecommendedTripsProps> = ({ trips }) => {
           </div>
         </div>
 
-        {/* --- Scrollable Container with Fade Effect --- */}
         <div className="relative">
-          {/* Left Fade */}
-          <div className={`absolute top-0 bottom-0 left-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none transition-opacity duration-300 ${canScrollLeft ? 'opacity-100' : 'opacity-0'}`} />
-          
-          {/* Right Fade */}
-          <div className={`absolute top-0 bottom-0 right-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none transition-opacity duration-300 ${canScrollRight ? 'opacity-100' : 'opacity-0'}`} />
+          <div
+            className={`absolute top-0 bottom-0 left-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none transition-opacity duration-300 ${
+              canScrollLeft ? "opacity-100" : "opacity-0"
+            }`}
+          />
+          <div
+            className={`absolute top-0 bottom-0 right-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none transition-opacity duration-300 ${
+              canScrollRight ? "opacity-100" : "opacity-0"
+            }`}
+          />
 
           <div
             ref={scrollRef}
@@ -134,6 +136,8 @@ const RecommendedTrips: React.FC<RecommendedTripsProps> = ({ trips }) => {
                   location={trip.itinerary?.[0]?.location ?? ""}
                   tags={[...(trip.tags || []), trip.travelStyle]}
                   price={`$${trip.estimatedPrice}`}
+                  isWishlisted={wishlist.includes(trip.id.toString())}
+                  onToggleWishlist={onToggleWishlist}
                 />
               </div>
             ))}

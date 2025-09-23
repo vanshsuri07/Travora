@@ -120,14 +120,6 @@ const Wishlist: React.FC<WishlistProps> = ({ wishlistedTrips, toggleWishlist }) 
           >
             {wishlistedTrips.map((trip) => (
               <div key={trip.id} className="relative group flex-shrink-0 w-[280px]">
-                {/* Remove from Wishlist Button */}
-                <button
-                  onClick={() => toggleWishlist(trip.id)}
-                  className="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/80 text-red-500 hover:text-red-600 shadow-md opacity-0 group-hover:opacity-100 transition-all"
-                >
-                  <FaTimesCircle className="w-5 h-5" />
-                </button>
-
                 <TripCard
                   id={trip.id.toString()}
                   name={trip.name}
@@ -135,6 +127,8 @@ const Wishlist: React.FC<WishlistProps> = ({ wishlistedTrips, toggleWishlist }) 
                   location={trip.itinerary?.[0]?.location ?? ""}
                   tags={[...(trip.interests || []), trip.travelStyle!]}
                   price={`$${trip.estimatedPrice ?? ""}`}
+                  isWishlisted={true}
+                  onToggleWishlist={toggleWishlist}
                 />
               </div>
             ))}
