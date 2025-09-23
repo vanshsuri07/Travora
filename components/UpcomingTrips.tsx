@@ -36,7 +36,7 @@ const UpcomingTrips: React.FC<UpcomingTripsProps> = ({
   trips: initialTrips = [],
   onFetchTrips,
   wishlist,
-  toggleWishlist,
+  onToggleWishlist,
 }) => {
   const [trips, setTrips] = useState<Trip[]>(initialTrips);
   const [loading, setLoading] = useState(!initialTrips || initialTrips.length === 0);
@@ -161,7 +161,7 @@ const scroll = (direction: "left" | "right") => {
               <div key={trip.id} className="relative group flex-shrink-0 w-[280px]">
                 {/* Wishlist Button */}
                 <button
-                  onClick={() => toggleWishlist(trip.id)}
+                  onClick={() => onToggleWishlist(trip.id)}
                   className="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/80 text-gray-700 hover:text-red-500 shadow-md opacity-0 group-hover:opacity-100 transition-all"
                 >
                   {wishlist.includes(trip.id) ? <FaHeart className="w-5 h-5 text-red-500"/> : <FaRegHeart className="w-5 h-5"/>}
@@ -173,6 +173,8 @@ const scroll = (direction: "left" | "right") => {
                     location={trip.itinerary?.[0]?.location ?? ""}
                     tags={[trip.interests!, trip.travelStyle!]}
                     price={`${trip.estimatedPrice ?? ""}`}
+                    isWishlisted={wishlist.includes(trip.id.toString())}
+                    onToggleWishlist={onToggleWishlist}
                   />
               </div>
             ))}
