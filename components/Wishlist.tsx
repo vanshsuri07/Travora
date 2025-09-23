@@ -125,7 +125,24 @@ const Wishlist: React.FC<WishlistProps> = ({ wishlistedTrips, toggleWishlist }) 
                   name={trip.name}
                   imageUrl={trip.imageUrls[0]}
                   location={trip.itinerary?.[0]?.location ?? ""}
-                  tags={[...(trip.interests || []), trip.travelStyle!]}
+                  tags={[
+  ...(
+    Array.isArray(trip.tags) 
+      ? trip.tags 
+      : trip.tags 
+        ? [trip.tags] 
+        : []
+  ),
+  ...(
+    Array.isArray(trip.interests) 
+      ? trip.interests 
+      : trip.interests 
+        ? [trip.interests] 
+        : []
+  ),
+  trip.travelStyle || ""
+].filter((tag): tag is string => typeof tag === "string" && tag.trim() !== "")}
+
                   price={`$${trip.estimatedPrice ?? ""}`}
                   isWishlisted={true}
                   onToggleWishlist={toggleWishlist}

@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+import * as React from 'react';
+import { useState, useRef, useEffect } from "react";
 import TripCard from "./TripCard";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -132,9 +133,9 @@ const RecommendedTrips: React.FC<RecommendedTripsProps> = ({
                 <TripCard
                   id={trip.id.toString()}
                   name={trip.name}
-                  imageUrl={trip.imageUrls?.[0]}
+                  imageUrl={trip.imageUrls?.[0] ?? ""}
                   location={trip.itinerary?.[0]?.location ?? ""}
-                  tags={[...(trip.tags || []), trip.travelStyle]}
+                  tags={[...(trip.tags || []), trip.travelStyle].filter((tag): tag is string => typeof tag === "string")}
                   price={`$${trip.estimatedPrice}`}
                   isWishlisted={wishlist.includes(trip.id.toString())}
                   onToggleWishlist={onToggleWishlist}

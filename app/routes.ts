@@ -1,11 +1,11 @@
 import { type RouteConfig, index, layout, route } from "@react-router/dev/routes";
-
 export default [
   // ----------------------------
   // AUTH ROUTES
   // ----------------------------
   route("sign-in", "routes/root/sign-in.tsx"),
-   // optional if you add registration
+  route("auth/callback", "routes/root/auth-callback.tsx"), // ✅ Add this line
+
   route("api/create-trip", "routes/api/create-trip.ts"),
   route("api/checkout", "routes/api/checkout.ts"),
 
@@ -15,7 +15,8 @@ export default [
   route("payment/success", "routes/payment/success/page.tsx"),
   route("payment/cancel", "routes/payment/cancel/page.tsx"),
 
-  // -------------
+  // ----------------------------
+  // ADMIN ROUTES
   // ----------------------------
   layout("routes/admin/admin-layout.tsx", [
     route("dashboard", "routes/admin/dashboard.tsx"),
@@ -30,10 +31,10 @@ export default [
   // ----------------------------
   layout("routes/root/page-layout.tsx", [
     index("routes/root/page.tsx"),
-    
+
     route("user", "routes/users/user-layout.tsx"),
     route("user/trip", "routes/users/create-trip.tsx"),
     route("user/my-trip", "routes/users/my-trip.tsx"),  // <- Outside user layout
     route("user/trip/:tripId", "routes/users/trip-detail.tsx"),
-]),
+  ]),
 ] satisfies RouteConfig;

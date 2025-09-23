@@ -30,9 +30,10 @@ const UserProfileDropdown = ({
   if (!user) return null;
 
   return (
-    <div className="relative" onMouseLeave={() => setIsOpen(false)}>
+    <div className="relative"  onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)} >
       <button
-        onMouseEnter={() => setIsOpen(true)}
+       
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center justify-center h-10 w-10 rounded-full bg-gray-200 text-gray-600 font-bold text-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       >
@@ -62,13 +63,13 @@ const UserProfileDropdown = ({
               <p className="text-sm text-gray-500 truncate">{user.email}</p>
             </div>
             <div className="py-2">
-              <Link
+              {/* <Link
                 to="/profile"
                 className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 <FaUserCircle className="text-gray-400" /> My Profile
-              </Link>
+              </Link> */}
               <button
                 onClick={() => {
                   onLogout();

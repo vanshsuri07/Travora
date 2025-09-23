@@ -1,8 +1,10 @@
-import React, { Suspense } from 'react';
+import * as React from 'react';
+import  { Suspense } from 'react';
 import { motion } from 'framer-motion';
 import {  Model } from './Model';
 import { Canvas } from '@react-three/fiber';
 import { Float, PresentationControls } from '@react-three/drei';
+import { Link } from 'react-router';
 
 // Main App component that renders the HeroSection
 export default function App() {
@@ -88,15 +90,21 @@ const HeroSection = () => {
               className="flex flex-col sm:flex-row gap-4 mt-8 justify-center md:justify-start"
               variants={itemVariants}
             >
-              <button
-  className="px-6 py-3 rounded-full font-semibold text-white text-lg
-             bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500 // Adjusted base gradient
-             hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600 // More vibrant, but still harmonious hover
-             transform hover:scale-105 transition-transform duration-300
-             shadow-md hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300"
+              <Link
+  to="/user"
+  className="
+    inline-block px-8 py-4 rounded-full font-semibold text-white text-lg
+    bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500
+    hover:from-blue-600 hover:via-indigo-600 hover:to-purple-600
+    hover:scale-105 hover:brightness-110
+    transform transition-transform duration-300
+    shadow-md hover:shadow-xl
+    focus:outline-none focus:ring-4 focus:ring-blue-300
+  "
 >
   Plan a Trip
-</button>
+</Link>
+
             </motion.div>
           </motion.div>
 

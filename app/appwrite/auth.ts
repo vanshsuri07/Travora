@@ -44,7 +44,8 @@ export const storeUserData = async () => {
                 name: user.name,
                 imageUrl: profilePicture,
                 joinedAt: new Date().toISOString(),
-                
+                status: "user", // Add this field to match your database schema
+                wishlist: [], // Initialize empty wishlist array
             }
         );
 
@@ -72,45 +73,60 @@ const getGooglePicture = async (accessToken: string) => {
     }
 };
 
-export const loginWithGoogle = async () => {
-    try {
-        account.createOAuth2Session(
-            OAuthProvider.Google,
-            `${window.location.origin}/auth/callback`, // ← Changed to callback URL
-            `${window.location.origin}/sign-in?error=oauth_failed`
-        );
-    } catch (error) {
-        console.error("Error during OAuth2 session creation:", error);
-    }
+
+
+export const loginWithGoogle = () => {
+  try {
+    account.createOAuth2Session(
+      OAuthProvider.Google,
+      `${window.location.origin}/auth/callback`,   // Success redirect
+      `${window.location.origin}/sign-in?error=oauth_failed` // Failure redirect
+    );
+  } catch (error) {
+    console.error("Error during OAuth2 session creation:", error);
+  }
 };
 
+
 // NEW: OAuth callback handler
+// Updated OAuth callback handler
 export const handleOAuthCallback = async () => {
-    try {
-        console.log("Handling OAuth callback...");
-        
-        // Check if user is authenticated
-        const user = await account.get();
-        if (!user) {
-            console.error("No authenticated user found");
-            return redirect("/sign-in");
-        }
+  try {
+    console.log("Handling OAuth callback...");
 
-        console.log("Authenticated user:", user.name);
-
-        // Store/get user data
-        const userData = await storeUserData();
-        if (!userData) {
-            console.error("Failed to create user data");
-            return redirect("/sign-in");
-        }
-
-        console.log("OAuth callback successful, redirecting to dashboard");
-        return redirect("/dashboard");
-    } catch (error) {
-        console.error("OAuth callback error:", error);
-        return redirect("/sign-in?error=callback_failed");
+    // Get authenticated user
+    const user = await account.get();
+    if (!user) {
+      console.error("No authenticated user found");
+      return redirect("/sign-in");
     }
+
+    console.log("Authenticated user:", user.name);
+
+    // Store/get user data
+    const userData = await storeUserData();
+    if (!userData) {
+      console.error("Failed to create user data");
+      return redirect("/sign-in");
+    }
+
+    // Check status (matching your database schema)
+    const status = userData.status || user.prefs?.status || "user";
+
+    console.log(`User status detected: ${status}`);
+
+    // Redirect based on status
+    if (status === "admin") {
+      console.log("Redirecting to admin dashboard...");
+      return redirect("/dashboard");
+    } else {
+      console.log("Redirecting to user area...");
+      return redirect("/user");
+    }
+  } catch (error) {
+    console.error("OAuth callback error:", error);
+    return redirect("/sign-in?error=callback_failed");
+  }
 };
 
 export const logoutUser = async () => {

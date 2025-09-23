@@ -1,11 +1,15 @@
-import { useState, useEffect } from "react";
-import UpcomingTrips from "../../components/UpcomingTrips";
-import RecommendedTrips from "../../components/RecommendedTrips";
-import Wishlist from "../../components/Wishlist";
-import { getUserTrips, getAllTrips } from "~/appwrite/trips";
-import { getUser } from "~/appwrite/auth";
-import { parseTripData } from "~/lib/utlis";
-import type { Route } from "./+types/dashboard";
+import { useState, useEffect, useCallback } from 'react';
+import { Navigate } from 'react-router';
+import { motion } from 'framer-motion';
+import UpcomingTrips from 'components/UpcomingTrips';
+import WelcomeSection from 'components/Welcome';
+import Wishlist from 'components/Wishlist';
+import RecommendedTrips from '../../../components/RecommendedTrips';
+import { getUserTrips, getAllTrips, updateUserWishlist } from '~/appwrite/trips';
+import { getUser } from '~/appwrite/auth';
+import { parseTripData } from '~/lib/utlis';
+import { allTrips } from '~/constants';
+import LayoutSkeleton from 'components/LayoutSkeleton'
 
 export const clientLoader = async () => {
   try {
@@ -14,7 +18,7 @@ export const clientLoader = async () => {
       throw new Response("Not authenticated", { status: 401 });
     }
 
-    const userTripsResponse = await getUserTrips(user.$id, 10, 0);
+    const userTripsResponse = await getUserTrips(user.$id);
     const userTrips = userTripsResponse.userTrips.map(
       ({ $id, tripDetails, imageUrls }) => ({
         $id,
