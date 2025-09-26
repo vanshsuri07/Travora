@@ -223,6 +223,8 @@ const TripDetail = ({ loaderData }: Route.ComponentProps) => {
                                 location={trip.itinerary?.[0]?.location ?? ""}
                                 tags={[trip.interests, trip.travelStyle].filter(Boolean)}
                                 price={trip.estimatedPrice}
+                                isWishlisted={false}
+                                onToggleWishlist={() => {}}
                             />
                         ))}
                     </div>

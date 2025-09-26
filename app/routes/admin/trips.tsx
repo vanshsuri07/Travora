@@ -61,6 +61,8 @@ const Trips = ({ loaderData }: Route.ComponentProps) => {
                             location={trip.itinerary?.[0]?.location ?? ""}
                             tags={[trip.interests, trip.travelStyle]}
                             price={trip.estimatedPrice}
+                            isWishlisted={false}
+                            onToggleWishlist={() => {}}
                         />
                     ))}
                 </div>

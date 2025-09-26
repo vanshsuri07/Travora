@@ -58,14 +58,15 @@ const PaymentSuccessPage = () => {
                 }
 
                 const user = await getUser();
-                console.log('User retrieved:', user?.$id);
-                
-                if (!user) {
+                // If getUser() can return different types, check for $id property
+                if (!user || typeof (user as any).$id !== 'string') {
                     throw new Error('User not authenticated');
                 }
+                const userId = (user as any).$id;
+                console.log('User retrieved:', userId);
 
                 // Create the booking
-                const booking = await createBooking(tripId, user.$id);
+                const booking = await createBooking(tripId, userId);
                 console.log('Booking created successfully:', booking);
                 
                 setBookingStatus('success');

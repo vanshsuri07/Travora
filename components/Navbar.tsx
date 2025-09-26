@@ -267,7 +267,7 @@ const Navbar = ({ onLogout, user }: NavbarProps) => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            variants={mobileMenuVariants}
+            variants={mobileMenuVariants as any}
             initial="closed"
             animate="open"
             exit="closed"

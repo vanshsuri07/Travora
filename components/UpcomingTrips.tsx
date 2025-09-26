@@ -171,7 +171,10 @@ const scroll = (direction: "left" | "right") => {
                     name={trip.name}
                     imageUrl={trip.imageUrls[0]}
                     location={trip.itinerary?.[0]?.location ?? ""}
-                    tags={[trip.interests!, trip.travelStyle!]}
+                    tags={[
+                      ...(Array.isArray(trip.interests) ? trip.interests : trip.interests ? [trip.interests] : []),
+                      ...(trip.travelStyle ? [trip.travelStyle] : [])
+                    ].filter((tag): tag is string => typeof tag === "string" && tag.trim() !== "")}
                     price={`${trip.estimatedPrice ?? ""}`}
                     isWishlisted={wishlist.includes(trip.id.toString())}
                     onToggleWishlist={onToggleWishlist}

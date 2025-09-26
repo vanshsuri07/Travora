@@ -16,6 +16,7 @@ interface TripCardProps {
   price: string;
   isWishlisted: boolean;
   onToggleWishlist: (tripId: string) => void;
+  clickable?: boolean;
 }
 
 const TripCard = ({

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+
 import TripCard from "./TripCard";
 import { FaHeartBroken, FaChevronLeft, FaChevronRight, FaTimesCircle } from "react-icons/fa";
 
@@ -12,6 +12,7 @@ interface Trip {
   interests?: string[];
   travelStyle?: string;
   estimatedPrice?: number;
+  tags?: string[] | string;
 }
 
 interface WishlistProps {

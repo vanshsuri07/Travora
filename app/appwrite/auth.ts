@@ -44,8 +44,7 @@ export const storeUserData = async () => {
                 name: user.name,
                 imageUrl: profilePicture,
                 joinedAt: new Date().toISOString(),
-                status: "user", // Add this field to match your database schema
-                wishlist: [], // Initialize empty wishlist array
+                
             }
         );
 
@@ -89,7 +88,6 @@ export const loginWithGoogle = () => {
 
 
 // NEW: OAuth callback handler
-// Updated OAuth callback handler
 export const handleOAuthCallback = async () => {
   try {
     console.log("Handling OAuth callback...");
@@ -103,20 +101,20 @@ export const handleOAuthCallback = async () => {
 
     console.log("Authenticated user:", user.name);
 
-    // Store/get user data
+    // Store/get user data (make sure this includes `role`)
     const userData = await storeUserData();
     if (!userData) {
       console.error("Failed to create user data");
       return redirect("/sign-in");
     }
 
-    // Check status (matching your database schema)
-    const status = userData.status || user.prefs?.status || "user";
+    // Check role (from userData or prefs)
+    const role = userData.role || user.prefs?.role || "user";
 
-    console.log(`User status detected: ${status}`);
+    console.log(`User role detected: ${role}`);
 
-    // Redirect based on status
-    if (status === "admin") {
+    // Redirect based on role
+    if (role === "admin") {
       console.log("Redirecting to admin dashboard...");
       return redirect("/dashboard");
     } else {
@@ -128,6 +126,7 @@ export const handleOAuthCallback = async () => {
     return redirect("/sign-in?error=callback_failed");
   }
 };
+
 
 export const logoutUser = async () => {
     try {

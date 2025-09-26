@@ -130,8 +130,10 @@ const Dashboard = ({ loaderData }: Route.ComponentProps) => {
                             name={trip.name!}
                             imageUrl={trip.imageUrls[0]}
                             location={trip.itinerary?.[0]?.location ?? ''}
-                             tags={trip.travelStyle ? [trip.travelStyle] : []}
+                            tags={trip.travelStyle ? [trip.travelStyle] : []}
                             price={trip.estimatedPrice!}
+                            isWishlisted={false}
+                            onToggleWishlist={() => {}}
                         />
                     ))}
                 </div>

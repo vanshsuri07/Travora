@@ -5,7 +5,7 @@ import TripCard from "./TripCard";
 
 const FeaturesSection = () => {
     return (
-        <section className="py-12 bg-white sm:py-16 lg:py-20">
+        <section className="py-12 bg-white sm:py-16 lg:py-20">s
             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div className="text-center">
                     <motion.h2
@@ -43,6 +43,9 @@ const FeaturesSection = () => {
                             imageUrl={'/assets/images/card-img-1.png'}
                             price={'$234'}
                             tags={['Adventure', 'Culture']}
+                            isWishlisted={false}
+                            onToggleWishlist={() => {}}
+                            clickable={false}
                         />
                     </motion.div>
                     <motion.div
@@ -58,6 +61,9 @@ const FeaturesSection = () => {
                             imageUrl={'/assets/images/card-img-2.png'}
                             price={'$543'}
                             tags={['Adventure', 'Culture']}
+                            isWishlisted={false}
+                            onToggleWishlist={() => {}}
+                            clickable={false}
                         />
                     </motion.div>
                     <motion.div
@@ -73,6 +79,9 @@ const FeaturesSection = () => {
                             imageUrl={'/assets/images/card-img-3.png'}
                             price={'$345'}
                             tags={['Adventure', 'Culture']}
+                            isWishlisted={false}
+                            onToggleWishlist={() => {}}
+                            clickable={false}
                         />
                     </motion.div>
                     <motion.div
@@ -88,6 +97,9 @@ const FeaturesSection = () => {
                             imageUrl={'/assets/images/card-img-4.png'}
                             price={'$765'}
                             tags={['Adventure', 'Culture']}
+                            isWishlisted={false}
+                            onToggleWishlist={() => {}}
+                            clickable={false}
                         />
                     </motion.div>
                     <motion.div
@@ -103,6 +115,9 @@ const FeaturesSection = () => {
                             imageUrl={'/assets/images/card-img-5.png'}
                             price={'$456'}
                             tags={['Adventure', 'Culture']}
+                            isWishlisted={false}
+                            onToggleWishlist={() => {}}
+                            clickable={false}
                         />
                     </motion.div>
                     <motion.div
@@ -118,6 +133,9 @@ const FeaturesSection = () => {
                             imageUrl={'/assets/images/card-img-6.png'}
                             price={'$678'}
                             tags={['Adventure', 'Culture']}
+                            isWishlisted={false}
+                            onToggleWishlist={() => {}}
+                            clickable={false}
                         />
                     </motion.div>
                 </div>
