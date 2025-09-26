@@ -26,8 +26,8 @@ const session = await stripe.checkout.sessions.create({
     },
   ],
   mode: "payment",
-  success_url: `http://localhost:5174/payment/success?tripId=${tripId}`,
-  cancel_url: `http://localhost:5174/payment/cancel`,
+  success_url: `https://travora-agency.vercel.app/success?tripId=${tripId}`,
+  cancel_url: `https://travora-agency.vercel.app/cancel`,
   metadata: { tripId },
 });
 
