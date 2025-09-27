@@ -16,14 +16,14 @@ export const loader = async () => {
 
     return countries.map((country: any) => ({
         name: country.name,
+        
         coordinates: country.latlng,
         value: country.name,
         openStreetMap: country.maps?.openStreetMap,
-    }));
-};
+    }))
+}
 
-const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
-    // All logic, state, and handlers remain unchanged
+const CreateTrip = ({ loaderData }: Route.ComponentProps ) => {
     const countries = loaderData as Country[];
     const navigate = useNavigate();
 
@@ -39,82 +39,74 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+       e.preventDefault()
         setLoading(true);
-        setError(null);
 
-        if (
-            !formData.country ||
-            !formData.travelStyle ||
-            !formData.interest ||
-            !formData.budget ||
-            !formData.groupType
-        ) {
-            setError('Please provide values for all fields');
-            setLoading(false);
-            return;
-        }
+       if(
+           !formData.country ||
+           !formData.travelStyle ||
+           !formData.interest ||
+           !formData.budget ||
+           !formData.groupType
+       ) {
+           setError('Please provide values for all fields');
+           setLoading(false)
+           return;
+       }
 
-        if (formData.duration < 1 || formData.duration > 10) {
-            setError('Duration must be between 1 and 10 days');
-            setLoading(false);
-            return;
-        }
-        const user = await account.get();
-        if (!user.$id) {
-            console.error('User not authenticated');
-            setError('You must be logged in to create a trip.');
-            setLoading(false);
-            return;
-        }
+       if(formData.duration < 1 || formData.duration > 10) {
+           setError('Duration must be between 1 and 10 days');
+           setLoading(false)
+           return;
+       }
+       const user = await account.get();
+       if(!user.$id) {
+           console.error('User not authenticated');
+           setLoading(false)
+           return;
+       }
 
-        try {
-            const response = await fetch('/api/create-trip', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    country: formData.country,
-                    numberOfDays: formData.duration,
-                    travelStyle: formData.travelStyle,
-                    interests: formData.interest,
-                    budget: formData.budget,
-                    groupType: formData.groupType,
-                    userId: user.$id
-                })
-            });
+       try {
+           const response = await fetch('/api/create-trip', {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json'},
+               body: JSON.stringify({
+                   country: formData.country,
+                   numberOfDays: formData.duration,
+                   travelStyle: formData.travelStyle,
+                   interests: formData.interest,
+                   budget: formData.budget,
+                   groupType: formData.groupType,
+                   userId: user.$id
+               })
+           })
 
-            const result: CreateTripResponse = await response.json();
+           const result: CreateTripResponse = await response.json();
 
-            if (result?.id) navigate(`/user/trip/${result.id}`);
-            else {
-                 setError('Failed to generate a trip. Please try again.');
-                 console.error('Failed to generate a trip');
-            }
-        } catch (e) {
-            setError('An unexpected error occurred. Please try again later.');
-            console.error('Error generating trip', e);
-        } finally {
-            setLoading(false);
-        }
+           if(result?.id) navigate(`/user/trip/${result.id}`)
+           else console.error('Failed to generate a trip')
+       } catch (e) {
+           console.error('Error generating trip', e);
+       } finally {
+           setLoading(false)
+       }
     };
 
-    const handleChange = (key: keyof TripFormData, value: string | number) => {
-        setFormData({ ...formData, [key]: value });
-    };
-
+    const handleChange = (key: keyof TripFormData, value: string | number)  => {
+    setFormData({ ...formData, [key]: value})
+    }
     const countryData = countries.map((country) => ({
         text: country.name,
         value: country.value,
-    }));
+    }))
 
     const mapData = [
         {
             country: formData.country,
-            color: '#2563EB', // A standard blue color
+            color: '#2563EB',
             coordinates: countries.find((c: Country) => c.name === formData.country)?.coordinates || []
         }
-    ];
-
+    ]
     return (
         <main className="relative min-h-screen w-full flex flex-col items-center justify-center py-16 px-4 overflow-hidden">
             {/* Background Image */}
@@ -142,27 +134,32 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
     onSubmit={handleSubmit}
   >
     {/* Country */}
-    <div>
+   
+    <div >
       <label htmlFor="country" className="text-white font-medium">Country</label>
-      <ComboBoxComponent
-        id="country"
-        dataSource={countryData}
-        fields={{ text: 'text', value: 'value' }}
-        placeholder="Select a Country"
-        className="combo-box w-full"
-        change={(e: { value: string | undefined }) => {
-          if(e.value) handleChange('country', e.value);
-        }}
-        allowFiltering
-        filtering={(e) => {
-          const query = e.text.toLowerCase();
-          e.updateData(
-            countries
-              .filter((country) => country.name.toLowerCase().includes(query))
-              .map((country) => ({ text: country.name, value: country.value }))
-          );
-        }}
-      />
+       <ComboBoxComponent
+                                  id="country"
+                                  dataSource={countryData}
+                                  fields={{ text: 'text', value: 'value' }}
+                                  placeholder="Select a Country"
+                                  className="combo-box w-full"
+                                  change={(e: { value: string | undefined }) => {
+                                      if(e.value) {
+                                          handleChange('country', e.value)
+                                      }
+                                  }}
+                                  allowFiltering
+                                  filtering={(e) => {
+                                      const query = e.text.toLowerCase();
+      
+                                      e.updateData(
+                                          countries.filter((country) => country.name.toLowerCase().includes(query)).map(((country) => ({
+                                              text: country.name,
+                                              value: country.value
+                                          })))
+                                      )
+                                  }}
+                              />
     </div>
 
     {/* Duration */}
@@ -173,7 +170,7 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps) => {
         name="duration"
         type="number"
         placeholder="Enter a number of days"
-        className="form-input placeholder:text-gray-200 w-full bg-white/20 backdrop-blur-sm border border-white/30 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="form-input placeholder:text-gray-200 w-full bg-white/20 backdrop-blur-sm border border-white/30 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 "
         onChange={(e) => handleChange('duration', Number(e.target.value))}
       />
     </div>
