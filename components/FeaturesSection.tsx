@@ -5,7 +5,7 @@ import TripCard from "./TripCard";
 
 const FeaturesSection = () => {
     return (
-        <section className="py-12 bg-white sm:py-16 lg:py-20">s
+        <section id="tours" className="py-12 bg-white sm:py-16 lg:py-20">s
             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div className="text-center">
                     <motion.h2

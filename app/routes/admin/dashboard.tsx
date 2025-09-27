@@ -1,4 +1,6 @@
-import {Header, StatsCard, TripCard} from "../../../components";
+import Header from "../../../components/Header";
+import StatsCard from "../../../components/StatsCard";
+import TripCard from "../../../components/TripCard";
 import {getAllUsers, getUser} from "~/appwrite/auth";
 import type { Route } from './+types/dashboard';
 import {getTripsByTravelStyle, getUserGrowthPerDay, getUsersAndTripsStats} from "~/appwrite/dashboard";

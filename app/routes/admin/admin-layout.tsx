@@ -1,6 +1,7 @@
 import { Outlet } from "react-router";
 import { SidebarComponent } from "@syncfusion/ej2-react-navigations";
-import { MobileSlidebar, NavItems } from "../../../components";
+import  MobileSlidebar  from "../../../components/MobileSlidebar";
+import NavItems from "../../../components/NavItems";
 import { account } from "~/appwrite/client";
 import { redirect } from "react-router";
 import { getExistingUser, storeUserData } from "~/appwrite/auth";

@@ -25,8 +25,8 @@ visible: {
 
 
 const UserLayout = () => {
-  const [userTrips, setUserTrips] = useState<FormattedTrip[]>([]);
-  const [user, setUser] = useState<User | null>(null);
+  const [userTrips, setUserTrips] = useState([]);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [wishlist, setWishlist] = useState<string[]>([]);
@@ -44,57 +44,23 @@ const UserLayout = () => {
   }));
 
   // Function to fetch user's trips
-  interface User {
-    accountId: string;
-    wishlist?: string[];
-    [key: string]: any;
-  }
-
-  interface TripDetails {
-    [key: string]: any;
-  }
-
-  interface UserTripResponse {
-    userTrips: Array<{
-      $id: string;
-      tripDetails: TripDetails;
-      imageUrls?: string[];
-    }>;
-  }
-
-  interface FormattedTrip {
-    $id: string;
-    id: string;
-    imageUrls: string[];
-    [key: string]: any;
-  }
-
-  const fetchUserTrips = async (currentUser: User): Promise<FormattedTrip[]> => {
+  const fetchUserTrips = async (currentUser) => {
     try {
       console.log('Fetching trips for user:', currentUser);
-
+      
       // Get user's trips
       const response = await getUserTrips(currentUser.accountId, 10, 0);
       console.log('User trips response:', response);
-
-      // Defensive mapping for tripDetails
-      const formattedTrips: FormattedTrip[] = (response.userTrips || []).map((doc: any) => {
-        const tripDetails = doc.tripDetails || {};
-        return {
-          $id: doc.$id ?? '',
-          id: doc.$id ?? '',
-          name: tripDetails.name ?? '',
-          imageUrls: Array.isArray(doc.imageUrls) ? doc.imageUrls : [],
-          interests: tripDetails.tags ?? [],
-          estimatedPrice: tripDetails.estimatedPrice ? parseFloat(String(tripDetails.estimatedPrice).replace(/[^0-9.]/g, '')) : 0,
-          itinerary: tripDetails.itinerary ?? [],
-          tags: tripDetails.tags ?? [],
-          travelStyle: tripDetails.travelStyle ?? '',
-        };
-      });
-
+      
+      const formattedTrips = response.userTrips.map(({ $id, tripDetails, imageUrls }) => ({
+        $id,
+        id: $id,
+        ...parseTripData(tripDetails),
+        imageUrls: imageUrls ?? []
+      }));
+      
       return formattedTrips;
-
+      
     } catch (error) {
       console.error('Error fetching trips:', error);
       throw error;
@@ -109,35 +75,27 @@ const UserLayout = () => {
         setError(null);
         
         // Check authentication
-        const currentUserRaw = await getUser();
-        console.log('Current user:', currentUserRaw);
-
-        // Type guard for user
-        let currentUser: User | null = null;
-        if (currentUserRaw && typeof currentUserRaw === 'object') {
-          // Try to extract accountId and wishlist
-          const accountId = (currentUserRaw as any).accountId ?? (currentUserRaw as any).$id ?? '';
-          const wishlist = Array.isArray((currentUserRaw as any).wishlist) ? (currentUserRaw as any).wishlist : [];
-          currentUser = { accountId, wishlist, ...currentUserRaw };
-        }
-
-        if (!currentUser || !currentUser.accountId) {
+        const currentUser = await getUser();
+        console.log('Current user:', currentUser);
+        
+        if (!currentUser) {
           setAuthChecked(true);
           setLoading(false);
           return; // Will trigger redirect
         }
-
+        
+        // Set user data
         setUser(currentUser);
         setWishlist(currentUser.wishlist || []);
         setAuthChecked(true);
-
+        
         // Fetch user trips
         const trips = await fetchUserTrips(currentUser);
         setUserTrips(trips);
         
       } catch (err) {
         console.error('Error initializing user data:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load user data');
+        setError(err.message || 'Failed to load user data');
         setAuthChecked(true);
       } finally {
         setLoading(false);
@@ -148,7 +106,8 @@ const UserLayout = () => {
   }, []);
 
   const toggleWishlist = useCallback(async (tripId: string) => {
-    if (!user || !user.accountId) return;
+    if (!user) return;
+    
     const newWishlist = wishlist.includes(tripId)
       ? wishlist.filter(id => id !== tripId)
       : [...wishlist, tripId];
@@ -165,7 +124,8 @@ const UserLayout = () => {
   }, [user, wishlist]);
 
   const refetchTrips = async () => {
-    if (!user || !user.accountId) return;
+    if (!user) return;
+    
     try {
       setError(null);
       const trips = await fetchUserTrips(user);
@@ -179,25 +139,16 @@ const UserLayout = () => {
   const wishlistedTrips = [
     ...userTrips,
     ...transformedTrips,
-  ].filter(trip => wishlist.includes(trip.id)).map(trip => ({
-    ...trip,
-    name: trip.name ?? '',
-    imageUrls: Array.isArray(trip.imageUrls) ? trip.imageUrls : [],
-    interests: trip.interests ?? [],
-    estimatedPrice: trip.estimatedPrice ?? 0,
-    itinerary: trip.itinerary ?? [],
-    tags: trip.tags ?? [],
-    travelStyle: trip.travelStyle ?? '',
-  }));
+  ].filter(trip => wishlist.includes(trip.id));
 
   // Show loading while checking authentication
    if (loading) {
-  return <LayoutSkeleton />;
+    return <LayoutSkeleton />;
   }
 
   // Redirect to sign-in if not authenticated
   if (!user) {
-  return <Navigate to="/sign-in" replace />;
+    return <Navigate to="/sign-in" replace />;
   }
 
   return (
@@ -216,35 +167,28 @@ const UserLayout = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
         >
-          <UpcomingTrips 
-            trips={userTrips.map(trip => ({
-              ...trip,
-              name: trip.name ?? '',
-              imageUrls: Array.isArray(trip.imageUrls) ? trip.imageUrls : [],
-              interests: trip.interests ?? [],
-              estimatedPrice: trip.estimatedPrice ?? 0,
-              itinerary: trip.itinerary ?? [],
-              tags: trip.tags ?? [],
-              travelStyle: trip.travelStyle ?? '',
-            }))} 
-            onFetchTrips={refetchTrips}
-            wishlist={wishlist}
-            onToggleWishlist={toggleWishlist}
-          />
+          
+            <UpcomingTrips 
+              trips={userTrips} 
+              onFetchTrips={refetchTrips}
+              wishlist={wishlist}
+              onToggleWishlist={toggleWishlist}
+            />
         </motion.section>
 
         <motion.section
-          id="wishlist"
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-        >
-          <Wishlist
-            wishlistedTrips={wishlistedTrips}
-            toggleWishlist={toggleWishlist}
-          />
-        </motion.section>
+  id="wishlist"
+  variants={sectionVariants}
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true, amount: 0.1 }}
+>
+ 
+  <Wishlist
+    wishlistedTrips={wishlistedTrips}
+    toggleWishlist={toggleWishlist}
+  />
+</motion.section>
 
         <motion.section
           variants={sectionVariants}
@@ -252,17 +196,9 @@ const UserLayout = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
         >
+          
           <RecommendedTrips 
-            trips={transformedTrips.map(trip => ({
-              ...trip,
-              name: trip.name ?? '',
-              imageUrls: Array.isArray(trip.imageUrls) ? trip.imageUrls : [],
-              interests: trip.interests ?? [],
-              estimatedPrice: trip.estimatedPrice ?? 0,
-              itinerary: trip.itinerary ?? [],
-              tags: trip.tags ?? [],
-              travelStyle: trip.travelStyle ?? '',
-            }))} 
+            trips={transformedTrips} 
             wishlist={wishlist}
             onToggleWishlist={toggleWishlist}
           />

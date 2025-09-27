@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { logoutUser } from "~/appwrite/auth";
 import { sidebarItems } from "~/constants";
 import { cn } from "~/lib/utlis";
-export default function NavItems({ handleClick}: { handleClick?: () => void }) {
+const NavItems = ({ handleClick}: { handleClick?: () => void }) => {
    const user = useLoaderData();
    const navigate = useNavigate();
 
@@ -63,3 +63,5 @@ export default function NavItems({ handleClick}: { handleClick?: () => void }) {
     </section>
   )
 }
+
+export default NavItems;

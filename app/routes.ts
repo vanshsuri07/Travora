@@ -29,12 +29,14 @@ export default [
   // ----------------------------
   // PUBLIC WEBSITE (Landing + Users)
   // ----------------------------
-  layout("routes/root/page-layout.tsx", [
+  layout("routes/root/page-layout.tsx"
+    , [
+    route("aboutus", "routes/root/aboutus.tsx"),
     index("routes/root/page.tsx"),
 
     route("user", "routes/users/user-layout.tsx"),
-    route("user/trip", "routes/users/create-trip.tsx"),
+      route("user/trip", "routes/users/create-trip.tsx"),
     route("user/my-trip", "routes/users/my-trip.tsx"),  // <- Outside user layout
-    route("user/trip/:tripId", "routes/users/trip-detail.tsx"),
-  ]),
+      route("user/trip/:tripId", "routes/users/trip-detail.tsx"),
+    ]),
 ] satisfies RouteConfig;

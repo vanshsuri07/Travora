@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { getUser } from "~/appwrite/auth";
 import { getUserBookings, getTripById } from "~/appwrite/trips";
 import { parseTripData } from '~/lib/utlis'; // Assuming you have this utility
-import { TripCard } from "../../../components"; // Header is no longer needed here
+import  TripCard  from "../../../components/TripCard"; // Header is no longer needed here
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- UI ENHANCEMENT: Skeleton Loader Component ---

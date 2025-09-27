@@ -161,9 +161,9 @@ const Navbar = ({ onLogout, user }: NavbarProps) => {
 
   const guestLinks = [
     { href: "/", label: "Home" },
-    { href: "/#about", label: "About Us" },
+    { href: "/aboutus", label: "About Us" },
     { href: "/#tours", label: "Tours" },
-    { href: "/contact", label: "Contact" },
+    { href: "/#contact", label: "Contact" },
   ];
 
   const userLinks = [

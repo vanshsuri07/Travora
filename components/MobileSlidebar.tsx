@@ -3,7 +3,7 @@ import  { SidebarComponent } from "@syncfusion/ej2-react-navigations";
 import { Link } from "react-router";
 import NavItems from "./NavItems";
 
-export default function MobileSlidebar() {
+const MobileSlidebar = () => {
     let sidebar : SidebarComponent;
     const toggleSidebar =   () => {
        sidebar.toggle();
@@ -34,3 +34,5 @@ export default function MobileSlidebar() {
     </div>
   )
 }
+
+export default MobileSlidebar;
