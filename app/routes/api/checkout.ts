@@ -25,11 +25,10 @@ const session = await stripe.checkout.sessions.create({
       quantity: 1,
     },
   ],
-  mode: "payment",
-  success_url:  `http://localhost:5173/payment/success?tripId=${tripId}`,
-  cancel_url: `http://localhost:5173/payment/cancel`,
-  
-  metadata: { tripId },
+ mode: "payment",
+success_url: `${import.meta.env.VITE_APP_URL}/payment/success?tripId=${tripId}`,
+cancel_url: `${import.meta.env.VITE_APP_URL}/payment/cancel`,
+metadata: { tripId },
 });
 
 

@@ -2,7 +2,9 @@ import type {LoaderFunctionArgs} from "react-router";
 import {getAllTrips, getTripById} from "~/appwrite/trips";
 import type { Route } from './+types/trip-detail';
 import {cn, getFirstWord, parseTripData} from "~/lib/utlis";
-import {Header, InfoPill, TripCard} from "../../../components";
+import Header from "../../../components/Header";
+import TripCard from "../../../components/TripCard";
+import InfoPill from "../../../components/infoPill";
 import {ChipDirective, ChipListComponent, ChipsDirective} from "@syncfusion/ej2-react-buttons";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
