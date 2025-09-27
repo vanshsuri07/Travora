@@ -18,9 +18,7 @@ export default defineConfig(config => {
   sentryConfig, 
   ssr:
   {
-    noExternal: [
-    /@syncfusion/
-    ],
+    noExternal: [],
   },
   };
 });

@@ -6,18 +6,8 @@ import type { Route } from './+types/dashboard';
 import {getTripsByTravelStyle, getUserGrowthPerDay, getUsersAndTripsStats} from "~/appwrite/dashboard";
 import {getAllTrips} from "~/appwrite/trips";
 import {parseTripData} from "~/lib/utlis";
-import {
-    Category,
-    ChartComponent,
-    ColumnSeries,
-    DataLabel, SeriesCollectionDirective, SeriesDirective,
-    SplineAreaSeries,
-    Tooltip
-} from "@syncfusion/ej2-react-charts";
-import {ColumnDirective, ColumnsDirective, GridComponent, Inject} from "@syncfusion/ej2-react-grids";
-import {tripXAxis, tripyAxis, userXAxis, useryAxis} from "~/constants";
 import { Link } from "react-router";
-
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, ComposedChart } from 'recharts';
 
 export const clientLoader = async () => {
     const [
@@ -58,6 +48,125 @@ export const clientLoader = async () => {
     }
 }
 
+// Custom Table Component (replacing GridComponent)
+interface CustomTableProps {
+  title: string;
+  dataSource: any[];
+  field: string;
+  headerText: string;
+}
+
+const CustomTable = ({ title, dataSource, field, headerText }: CustomTableProps) => (
+  <div className="flex flex-col gap-5">
+    <h3 className="p-20-semibold text-dark-100">{title}</h3>
+    
+    <div className="w-full overflow-hidden rounded-lg bg-white shadow-sm border">
+      {/* Header */}
+      <div className="bg-gray-50 border-b">
+        <div className="grid grid-cols-2 gap-4 px-6 py-4">
+          <div className="font-medium text-gray-700 text-sm">Name</div>
+          <div className="font-medium text-gray-700 text-sm">{headerText}</div>
+        </div>
+      </div>
+      
+      {/* Body */}
+      <div className="divide-y divide-gray-100">
+        {dataSource.map((item, index) => (
+          <div key={index} className="grid grid-cols-2 gap-4 px-6 py-4 hover:bg-gray-50 transition-colors">
+            <div className="flex items-center gap-1.5">
+              <img 
+                src={item.imageUrl} 
+                alt="user" 
+                className="rounded-full size-8 aspect-square object-cover" 
+                referrerPolicy="no-referrer"
+              />
+              <span className="text-sm text-gray-900">{item.name}</span>
+            </div>
+            <div className="flex items-center">
+              <span className="text-sm text-gray-700">{item[field]}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+// Custom Chart Components using Recharts
+const UserGrowthChart = ({ data }: { data: any[] }) => (
+  <div className="bg-white p-6 rounded-lg shadow-sm border">
+    <h3 className="text-lg font-semibold mb-4 text-gray-800">User Growth</h3>
+    <ResponsiveContainer width="100%" height={300}>
+      <ComposedChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+        <XAxis 
+          dataKey="day" 
+          tick={{ fontSize: 12 }}
+          stroke="#666"
+        />
+        <YAxis 
+          tick={{ fontSize: 12 }}
+          stroke="#666"
+        />
+        <Tooltip 
+          contentStyle={{ 
+            backgroundColor: 'white', 
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+          }}
+        />
+        <Bar 
+          dataKey="count" 
+          fill="#4784EE" 
+          radius={[10, 10, 0, 0]}
+          maxBarSize={40}
+        />
+        <Area 
+          type="monotone" 
+          dataKey="count" 
+          fill="rgba(71, 132, 238, 0.3)" 
+          stroke="#4784EE"
+          strokeWidth={2}
+        />
+      </ComposedChart>
+    </ResponsiveContainer>
+  </div>
+);
+
+const TripTrendsChart = ({ data }: { data: any[] }) => (
+  <div className="bg-white p-6 rounded-lg shadow-sm border">
+    <h3 className="text-lg font-semibold mb-4 text-gray-800">Trip Trends</h3>
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+        <XAxis 
+          dataKey="travelStyle" 
+          tick={{ fontSize: 12 }}
+          stroke="#666"
+        />
+        <YAxis 
+          tick={{ fontSize: 12 }}
+          stroke="#666"
+        />
+        <Tooltip 
+          contentStyle={{ 
+            backgroundColor: 'white', 
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+          }}
+        />
+        <Bar 
+          dataKey="count" 
+          fill="#4784EE" 
+          radius={[10, 10, 0, 0]}
+          maxBarSize={40}
+        />
+      </BarChart>
+    </ResponsiveContainer>
+  </div>
+);
 
 const Dashboard = ({ loaderData }: Route.ComponentProps) => {
     const user = loaderData.user as User | null;
@@ -91,13 +200,13 @@ const Dashboard = ({ loaderData }: Route.ComponentProps) => {
                 description="Track activity, trends and popular destinations in real time"
             />
            <div className="absolute top-8 right-8">
-  <Link
-    to="/user"
-    className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 shadow-md"
-  >
-    Switch to user
-  </Link>
-</div>
+              <Link
+                to="/user"
+                className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 shadow-md transition-colors"
+              >
+                Switch to user
+              </Link>
+            </div>
 
             <section className="flex flex-col gap-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
@@ -121,6 +230,7 @@ const Dashboard = ({ loaderData }: Route.ComponentProps) => {
                     />
                 </div>
             </section>
+
             <section className="container">
                 <h1 className="text-xl font-semibold text-dark-100">Created Trips</h1>
 
@@ -141,94 +251,26 @@ const Dashboard = ({ loaderData }: Route.ComponentProps) => {
                 </div>
             </section>
 
+            {/* Charts Section */}
             <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                <ChartComponent
-                    id="chart-1"
-                    primaryXAxis={userXAxis}
-                    primaryYAxis={useryAxis}
-                    title="User Growth"
-                    tooltip={{ enable: true}}
-                >
-                    <Inject services={[ColumnSeries, SplineAreaSeries, Category, DataLabel, Tooltip]} />
-
-                    <SeriesCollectionDirective>
-                        <SeriesDirective
-                            dataSource={userGrowth}
-                            xName="day"
-                            yName="count"
-                            type="Column"
-                            name="Column"
-                            columnWidth={0.3}
-                            cornerRadius={{topLeft: 10, topRight: 10}}
-                        />
-
-                        <SeriesDirective
-                            dataSource={userGrowth}
-                            xName="day"
-                            yName="count"
-                            type="SplineArea"
-                            name="Wave"
-                            fill="rgba(71, 132, 238, 0.3)"
-                            border={{ width: 2, color: '#4784EE'}}
-                        />
-                    </SeriesCollectionDirective>
-                </ChartComponent>
-
-                <ChartComponent
-                    id="chart-2"
-                    primaryXAxis={tripXAxis}
-                    primaryYAxis={tripyAxis}
-                    title="Trip Trends"
-                    tooltip={{ enable: true}}
-                >
-                    <Inject services={[ColumnSeries, SplineAreaSeries, Category, DataLabel, Tooltip]} />
-
-                    <SeriesCollectionDirective>
-                        <SeriesDirective
-                            dataSource={tripsByTravelStyle}
-                            xName="travelStyle"
-                            yName="count"
-                            type="Column"
-                            name="day"
-                            columnWidth={0.3}
-                            cornerRadius={{topLeft: 10, topRight: 10}}
-                        />
-                    </SeriesCollectionDirective>
-                </ChartComponent>
+                <UserGrowthChart data={userGrowth} />
+                <TripTrendsChart data={tripsByTravelStyle} />
             </section>
 
+            {/* Tables Section */}
             <section className="user-trip wrapper">
-                {usersAndTrips.map(({ title, dataSource, field, headerText}, i) => (
-                    <div key={i} className="flex flex-col gap-5">
-                        <h3 className="p-20-semibold text-dark-100">{title}</h3>
-
-                        <GridComponent dataSource={dataSource} gridLines="None">
-                            <ColumnsDirective>
-                                <ColumnDirective
-                                    field="name"
-                                    headerText="Name"
-                                    width="200"
-                                    textAlign="Left"
-                                    template={(props: UserData) => (
-                                        <div className="flex items-center gap-1.5 px-4">
-                                            <img src={props.imageUrl} alt="user" className="rounded-full size-8 aspect-square" referrerPolicy="no-referrer" />
-                                            <span>{props.name}</span>
-                                        </div>
-                                    )}
-                                />
-
-                                <ColumnDirective
-                                    field={field}
-                                    headerText={headerText}
-                                    width="150"
-                                    textAlign="Left"
-                                />
-                            </ColumnsDirective>
-                        </GridComponent>
-                    </div>
+                {usersAndTrips.map((config, i) => (
+                    <CustomTable
+                        key={i}
+                        title={config.title}
+                        dataSource={config.dataSource}
+                        field={config.field}
+                        headerText={config.headerText}
+                    />
                 ))}
             </section>
         </main>
     )
 }
+
 export default Dashboard

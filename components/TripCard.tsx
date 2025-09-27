@@ -1,9 +1,4 @@
 import { Link, useLocation } from "react-router";
-import {
-  ChipDirective,
-  ChipListComponent,
-  ChipsDirective,
-} from "@syncfusion/ej2-react-buttons";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { cn, getFirstWord } from "~/lib/utlis";
 
@@ -19,6 +14,16 @@ interface TripCardProps {
   clickable?: boolean;
 }
 
+
+const Chip = ({ text, className }: { text: string; className?: string }) => (
+  <span className={cn(
+    "inline-block px-3 py-1 text-xs font-medium rounded-md",
+    className
+  )}>
+    {text}
+  </span>
+);
+
 const TripCard = ({
   id,
   name,
@@ -28,9 +33,23 @@ const TripCard = ({
   price,
   isWishlisted,
   onToggleWishlist,
-  clickable = true, // default true
+  clickable = true,
 }: TripCardProps) => {
   const path = useLocation();
+
+  // Define chip colors for different indices
+  const getChipStyle = (index: number) => {
+    switch (index) {
+      case 0:
+        return "bg-teal-100 text-teal-600";
+      case 1:
+        return "bg-pink-100 text-pink-600";
+      case 2:
+        return "bg-indigo-100 text-indigo-600";
+      default:
+        return "bg-gray-100 text-gray-600";
+    }
+  };
 
   return (
     <div
@@ -49,7 +68,6 @@ const TripCard = ({
         >
           {isWishlisted ? <FaHeart className="w-5 h-5" /> : <FaRegHeart className="w-5 h-5" />}
         </button>
-
         <article className="absolute bottom-0 left-0 p-4 w-full">
           <h2 className="text-white text-lg font-bold truncate">{name}</h2>
           <figure className="flex items-center mt-1">
@@ -65,32 +83,22 @@ const TripCard = ({
         </article>
       </div>
 
-      {/* Tags */}
+      {/* Tags - Custom implementation */}
       <div className="p-4 flex-grow">
-        <ChipListComponent id={`travel-chip-${id}`}>
-          <ChipsDirective>
-            {tags?.slice(0, 3).map((tag, index) => (
-              <ChipDirective
-                key={index}
-                text={getFirstWord(tag)}
-                cssClass={cn(
-                  "!text-xs !font-medium !rounded-md",
-                  index === 1
-                    ? "!bg-pink-100 !text-pink-600"
-                    : index === 2
-                    ? "!bg-indigo-100 !text-indigo-600"
-                    : "!bg-teal-100 !text-teal-600"
-                )}
-              />
-            ))}
-          </ChipsDirective>
-        </ChipListComponent>
+        <div className="flex flex-wrap gap-2">
+          {tags?.slice(0, 3).map((tag, index) => (
+            <Chip
+              key={index}
+              text={getFirstWord(tag)}
+              className={getChipStyle(index)}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Price + Book Now */}
       <article className="flex items-center justify-between p-4 border-t border-gray-100 bg-gray-50">
         <div className="tripCard-pill">{price}</div>
-
         {clickable ? (
           <Link
             to={
@@ -98,7 +106,7 @@ const TripCard = ({
                 ? `/travel/${id}`
                 : `/user/trip/${id}`
             }
-            className="px-5 py-2 rounded-full bg-black text-white"
+            className="px-5 py-2 rounded-full bg-black text-white hover:bg-gray-800 transition-colors"
           >
             Book Now
           </Link>

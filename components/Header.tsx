@@ -1,4 +1,4 @@
-import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
+
 import { Link, useLocation } from "react-router";
 import { cn } from "~/lib/utlis";
 
@@ -19,10 +19,14 @@ const Header = ({title, description,ctaText,ctaUrl}: Props) => {
         </article>
         {ctaText && ctaUrl && (
                 <Link to={ctaUrl}>
-                    <ButtonComponent type="button" className="button-class !h-11 !w-full md:w-[240px]">
+                    <button
+    type="button"
+    className="button-class !h-11 !w-full flex items-center justify-center gap-3 transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+    
+>
                         <img src="/assets/icons/plus.svg" alt="plus" className="size-5" />
                         <span className="p-16-semibold text-white">{ctaText}</span>
-                    </ButtonComponent>
+                    </button>
                 </Link>
             )}
     </header>

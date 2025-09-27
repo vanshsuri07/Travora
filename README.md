@@ -5,9 +5,10 @@
   <h1>Travora</h1>
   <p>Your AI-powered travel companion to discover, plan, and book your next adventure.</p>
 
-  [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge)](https://your-live-demo-url.com)
-  [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge)](https://your-build-status-url.com)
-  [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge)](https://your-live-demo-url.com)
+[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge)](https://your-build-status-url.com)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+
 </div>
 
 ## ✨ Features
@@ -35,7 +36,6 @@
   </table>
 </div>
 
-
 ## 🚀 Tech Stack
 
 - **Frontend**: React, React Router, Tailwind CSS
@@ -43,7 +43,6 @@
 - **3D Globe**: React Three Fiber, Three.js, React Globe.gl
 - **AI**: Google Generative AI
 - **Payments**: Stripe
-- **UI Components**: Syncfusion
 
 ## 🏁 Getting Started
 

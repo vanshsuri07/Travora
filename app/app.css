@@ -1,11 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
-@import "../node_modules/@syncfusion/ej2-base/styles/material.css";
-@import "../node_modules/@syncfusion/ej2-react-buttons/styles/material.css";
-@import "../node_modules/@syncfusion/ej2-react-grids/styles/material.css";
-@import "../node_modules/@syncfusion/ej2-react-navigations/styles/material.css";
-@import "../node_modules/@syncfusion/ej2-react-splitbuttons/styles/material.css";
-@import "../node_modules/@syncfusion/ej2-react-dropdowns/styles/material.css";
 @import "tailwindcss";
 @layer utilities {
   .shadow-text {
@@ -460,7 +454,7 @@
     @apply text-sm font-normal text-gray-100;
   }
   .form-input {
-    @apply p-3.5 border border-light-400 rounded-xl text-base text-dark-300 font-normal;
+    @apply p-2.5 border border-light-400 rounded-xl text-base text-dark-300 font-normal;
   }
 .comboBox-popup {
     @apply absolute z-10 top-24 bg-white border border-gray-200 rounded-xl shadow-200 h-[250px] w-full md:max-w-[660px] overflow-hidden;
@@ -497,7 +491,7 @@ body {
   -webkit-backdrop-filter: blur(2px);
 }
 
-/* ======== css overrides for syncfusion ========= */
+
 .e-grid,
 .e-table {
   border-color: #eef9ff !important;

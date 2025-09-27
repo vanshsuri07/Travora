@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
-import { SidebarComponent } from "@syncfusion/ej2-react-navigations";
+
 import  MobileSlidebar  from "../../../components/MobileSlidebar";
 import NavItems from "../../../components/NavItems";
 import { account } from "~/appwrite/client";
@@ -53,6 +53,14 @@ export async function clientLoader() {
   }
 }
 
+const CustomSidebar = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="h-full w-[270px] bg-white shadow-lg border-r border-gray-200 fixed top-0 ">
+      {children}
+    </div>
+  );
+};
+
 export default function AdminLayout() {
   return (
     <div className="admin-layout-container">
@@ -62,13 +70,9 @@ export default function AdminLayout() {
       <div className="admin-layout flex min-h-screen">
         {/* Desktop Sidebar */}
         <aside className="w-full max-w-[270px] hidden lg:block bg-white shadow-lg">
-          <SidebarComponent 
-            width={270} 
-            enableGestures={false}
-            className="h-full"
-          >
-            <NavItems />
-          </SidebarComponent>
+          <CustomSidebar>
+  <NavItems />
+</CustomSidebar>
         </aside>
 
         {/* Main Content Area */}

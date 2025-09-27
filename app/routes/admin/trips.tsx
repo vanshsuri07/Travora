@@ -5,7 +5,8 @@ import {getAllTrips, getTripById} from "~/appwrite/trips";
 import {parseTripData} from "~/lib/utlis";
 import type {Route} from './+types/trips'
 import {useState} from "react";
-import {PagerComponent} from "@syncfusion/ej2-react-grids";
+
+import CustomPagination from "components/ui/CustomPagination";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
     const limit = 8;
@@ -68,13 +69,13 @@ const Trips = ({ loaderData }: Route.ComponentProps) => {
                     ))}
                 </div>
 
-                <PagerComponent
-                    totalRecordsCount={loaderData.total}
-                    pageSize={8}
-                    currentPage={currentPage}
-                    click={(args) => handlePageChange(args.currentPage)}
-                    cssClass="!mb-4"
-                />
+                <CustomPagination
+  totalRecordsCount={loaderData.total}
+  pageSize={8}
+  currentPage={currentPage}
+  onPageChange={handlePageChange}
+  className="!mb-4"
+/>
             </section>
         </main>
     )
