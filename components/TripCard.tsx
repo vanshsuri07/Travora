@@ -64,7 +64,7 @@ const TripCard = ({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0" />
         <button
           onClick={() => onToggleWishlist(id)}
-          className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/80 text-red-500 hover:text-red-600 shadow-md transition-all"
+          className="absolute top-3 left-3 z-10 p-2 rounded-full bg-white/80 text-red-500 hover:text-red-600 shadow-md transition-all"
         >
           {isWishlisted ? <FaHeart className="w-5 h-5" /> : <FaRegHeart className="w-5 h-5" />}
         </button>
