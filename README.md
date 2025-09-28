@@ -1,11 +1,11 @@
-# Travora - Your AI-Powered Travel Companion
+# Travora - Your AI-Powered Travel Companion (with admin dashboard)
 
 <div align="center">
   <img src="public/assets/icons/logo.svg" alt="Travora Logo" width="150"/>
   <h1>Travora</h1>
   <p>Your AI-powered travel companion to discover, plan, and book your next adventure.</p>
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge)](https://your-live-demo-url.com)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge)](https://travora-agency.vercel.app/)
 [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge)](https://your-build-status-url.com)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
@@ -55,7 +55,7 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/vanshsuri07/travora.git
+   git clone https://github.com/vanshsuri07/Travora.git
    ```
 2. Install the dependencies:
    ```bash
