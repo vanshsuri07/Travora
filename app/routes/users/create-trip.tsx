@@ -77,18 +77,18 @@ const CustomComboBox: React.FC<ComboBoxProps> = ({
       }}
       onFocus={() => setIsOpen(true)}
       placeholder={placeholder}
-      className="w-full h-12 bg-white/20 backdrop-blur-sm border border-white/30 rounded-md px-3 text-white placeholder:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      className="w-full h-10 bg-white/20 backdrop-blur-sm border border-white/30 rounded-md px-3 text-white placeholder:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
       autoComplete="off"
     />
     
     {isOpen && (
-      <div className="absolute z-50 w-full mt-1 bg-white/95 backdrop-blur-lg border border-white/40 rounded-lg shadow-xl max-h-48 overflow-y-auto">
+      <div className="absolute z-50 w-2/3 mt-1 bg-white/95  border border-white/40 rounded-lg shadow-xl max-h-48 overflow-y-auto">
         {filteredData.length > 0 ? (
           filteredData.map((item, index) => (
             <div
               key={index}
               onClick={() => handleSelect(item)}
-              className="px-3 py-2 hover:bg-blue-500/30 cursor-pointer text-gray-900 hover:text-blue-900 transition-all duration-150 text-sm first:rounded-t-lg last:rounded-b-lg"
+              className="px-3 py-2  hover:bg-blue-500/30 cursor-pointer text-gray-900 hover:text-blue-900 transition-all duration-150 text-sm first:rounded-t-lg last:rounded-b-lg"
             >
               {item.text}
             </div>
