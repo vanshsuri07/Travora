@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "react-router build",
-    "dev": "cross-env NODE_OPTIONS=\"--import ./instrument.server.mjs\" react-router dev",
+    "dev": "cross-env NODE_OPTIONS=\"--import ./instrument.server.mjs\" react-router dev --host",
     "start": "cross-env NODE_OPTIONS=\"--import ./instrument.server.mjs\" react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc"
   },

@@ -1,0 +1,23 @@
+services:
+  app:
+    build: .
+    container_name: travora-dev
+    ports:
+      - "5173:5173"
+    env_file:
+      - .env.local  # Load from file
+    environment:
+      # Override specific values if needed
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - travora-network
+    command: sh -c "npm install && npm run dev"
+    restart: unless-stopped
+
+networks:
+  travora-network:
+    driver: bridge
+    name: travora-network
