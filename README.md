@@ -90,7 +90,7 @@ To build and run using Docker:
 docker build -t travora .
 
 # Run the container
-docker run -p 3000:3000 travora
+docker run -p 5173:5173 travora
 ```
 
 The containerized application can be deployed to any platform that supports Docker, including:
