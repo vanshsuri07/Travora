@@ -4,7 +4,7 @@ export default [
   // AUTH ROUTES
   // ----------------------------
   route("sign-in", "routes/root/sign-in.tsx"),
-  route("auth/callback", "routes/root/auth-callback.tsx"), // ✅ Add this line
+  route("auth-callback", "routes/root/auth-callback.tsx"), // ✅ Add this line
 
   route("api/create-trip", "routes/api/create-trip.ts"),
   route("api/checkout", "routes/api/checkout.ts"),

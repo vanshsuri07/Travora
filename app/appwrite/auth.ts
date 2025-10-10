@@ -76,15 +76,21 @@ const getGooglePicture = async (accessToken: string) => {
 
 export const loginWithGoogle = () => {
   try {
+    // Use window.location.origin to get the correct base URL
+    const successUrl = `${window.location.origin}/auth-callback`;
+    const failureUrl = `${window.location.origin}/sign-in?error=oauth_failed`;
+    
+    console.log("OAuth URLs:", { successUrl, failureUrl });
+    
     account.createOAuth2Session(
       OAuthProvider.Google,
-      `${window.location.origin}/auth/callback`,   // Success redirect
-      `${window.location.origin}/sign-in?error=oauth_failed` // Failure redirect
+      successUrl,
+      failureUrl
     );
   } catch (error) {
     console.error("Error during OAuth2 session creation:", error);
   }
-};
+}
 
 
 // NEW: OAuth callback handler
