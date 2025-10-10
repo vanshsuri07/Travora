@@ -38,6 +38,6 @@ COPY --chown=nodejs:nodejs instrument.server.mjs ./
 
 USER nodejs
 
-EXPOSE 5173
+EXPOSE 3000
 
 CMD ["npm", "run", "start"]
