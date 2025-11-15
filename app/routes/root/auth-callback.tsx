@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { account, database, appwriteConfig } from "~/appwrite/client";
 import { Query } from "appwrite";
+import { logger } from "~/lib/logger";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
@@ -15,13 +16,13 @@ export default function AuthCallback() {
         const userId = urlParams.get('userId');
         const secret = urlParams.get('secret');
         
-        console.log("OAuth params:", { userId, secret: secret ? "present" : "missing" });
+        logger.log("OAuth params received");
 
         // If we have userId and secret, create the session
         if (userId && secret) {
           setStatus("Creating session...");
           await account.createSession(userId, secret);
-          console.log("Session created from OAuth params");
+          logger.log("Session created from OAuth params");
           
           // Wait for session to settle
           await new Promise(resolve => setTimeout(resolve, 500));
@@ -41,9 +42,9 @@ export default function AuthCallback() {
           attempts++;
           try {
             user = await account.get();
-            console.log("✅ User authenticated:", user.name);
+            logger.log("User authenticated successfully");
           } catch (e: any) {
-            console.log(`Attempt ${attempts}/${maxAttempts}: ${e.message}`);
+            logger.log(`Authentication attempt ${attempts}/${maxAttempts}`);
             if (attempts < maxAttempts) {
               await new Promise(resolve => setTimeout(resolve, 1000));
             } else {
@@ -66,12 +67,12 @@ export default function AuthCallback() {
 
         let userDoc;
         if (documents.length === 0) {
-          console.log("Creating user profile...");
+          logger.log("Creating user profile");
           const { storeUserData } = await import("~/appwrite/auth");
           userDoc = await storeUserData();
           
           if (!userDoc) {
-            console.error("Failed to create user data");
+            logger.error("Failed to create user data");
             navigate("/sign-in?error=user_creation_failed");
             return;
           }
@@ -81,7 +82,7 @@ export default function AuthCallback() {
 
         // Check role
         const role = userDoc.role || user.prefs?.role || "user";
-        console.log(`Redirecting to ${role} dashboard...`);
+        logger.log("Redirecting to dashboard");
 
         // Redirect based on role
         if (role === "admin") {
@@ -91,7 +92,7 @@ export default function AuthCallback() {
         }
         
       } catch (err: any) {
-        console.error("❌ Auth callback failed:", err);
+        logger.error("Auth callback failed:", err);
         navigate(`/sign-in?error=${encodeURIComponent(err.message || 'auth_failed')}`);
       }
     };

@@ -3,6 +3,7 @@ import { getAllTrips, getTripById } from "~/appwrite/trips";
 import type { Route } from './+types/trip-detail';
 import { cn, getFirstWord, parseTripData } from "~/lib/utlis";
 import  TripCard  from "../../../components/TripCard"; // Assuming Header is not needed directly here anymore
+import { logger } from "~/lib/logger";
 
 // Icons - It's better to use a library or inline SVGs
 const CalendarIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 inline-block text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>;
@@ -48,10 +49,10 @@ const TripDetail = ({ loaderData }: Route.ComponentProps) => {
         const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
         if (!stripe) {
-            console.error("Stripe.js failed to load.");
+            logger.error("Stripe.js failed to load");
             return;
         }
-        console.log("Booking price sent to backend:", estimatedPrice);
+        logger.log("Booking price sent to backend");
 
         const response = await fetch('/api/checkout', {
             method: 'POST',
@@ -74,7 +75,7 @@ const TripDetail = ({ loaderData }: Route.ComponentProps) => {
         });
 
         if (result.error) {
-            console.error(result.error.message);
+            logger.error(result.error.message);
         }
     };
 

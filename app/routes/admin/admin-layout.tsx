@@ -5,16 +5,17 @@ import NavItems from "../../../components/NavItems";
 import { account } from "~/appwrite/client";
 import { redirect } from "react-router";
 import { getExistingUser, storeUserData } from "~/appwrite/auth";
+import { logger } from "~/lib/logger";
 
 export async function clientLoader() {
   try {
-    console.log('Checking admin authentication...');
+    logger.log('Checking admin authentication');
     
     // Get current user from Appwrite
     const user = await account.get();
     
     if (!user.$id) {
-      console.log('No user found, redirecting to sign-in');
+      logger.log('No user found, redirecting to sign-in');
       return redirect('/sign-in');
     }
     
@@ -23,7 +24,7 @@ export async function clientLoader() {
     
     // Check if user has admin status
     if (existingUser?.status !== 'admin') {
-      console.log('User is not admin, redirecting to user area');
+      logger.log('User is not admin, redirecting to user area');
       
       // If user exists but is not admin, redirect to user area
       if (existingUser?.status === 'user') {
@@ -34,17 +35,17 @@ export async function clientLoader() {
       return redirect('/user');
     }
     
-    console.log('Admin user authenticated:', existingUser);
+    logger.log('Admin user authenticated successfully');
     
     // Return existing user or create/store new user data
     return existingUser?.$id ? existingUser : await storeUserData();
     
   } catch (error) {
-    console.error('Error in admin clientLoader:', error);
+    logger.error('Error in admin clientLoader:', error);
     
     // Handle specific error types
   if (error instanceof Error && (error as any).code === 401) {
-  console.log('User session expired, redirecting to sign-in', error);
+  logger.log('User session expired, redirecting to sign-in');
   return redirect('/sign-in');
 }
     

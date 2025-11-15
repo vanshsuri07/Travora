@@ -1,5 +1,16 @@
 # Stage 1: Development Dependencies
 FROM node:20-alpine AS development-dependencies-env
+
+# Declare build args for VITE_ variables
+ARG VITE_APPWRITE_PROJECT_ID
+ARG VITE_APPWRITE_API_ENDPOINT
+ARG VITE_APPWRITE_DATABASE_ID
+ARG VITE_APPWRITE_USERS_COLLECTION_ID
+ARG VITE_APPWRITE_TRIPS_COLLECTION_ID
+ARG VITE_APPWRITE_BOOKING_COLLECTION_ID
+ARG VITE_STRIPE_PUBLISHABLE_KEY
+ARG VITE_APP_URL
+
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -15,6 +26,29 @@ RUN npm ci --omit=dev && \
 
 # Stage 3: Build
 FROM node:20-alpine AS build-env
+
+# Re-declare build args for this stage
+ARG NODE_ENV=production
+ARG VITE_APPWRITE_PROJECT_ID
+ARG VITE_APPWRITE_API_ENDPOINT
+ARG VITE_APPWRITE_DATABASE_ID
+ARG VITE_APPWRITE_USERS_COLLECTION_ID
+ARG VITE_APPWRITE_TRIPS_COLLECTION_ID
+ARG VITE_APPWRITE_BOOKING_COLLECTION_ID
+ARG VITE_STRIPE_PUBLISHABLE_KEY
+ARG VITE_APP_URL
+
+# Set as environment variables for build
+ENV NODE_ENV=$NODE_ENV
+ENV VITE_APPWRITE_PROJECT_ID=$VITE_APPWRITE_PROJECT_ID
+ENV VITE_APPWRITE_API_ENDPOINT=$VITE_APPWRITE_API_ENDPOINT
+ENV VITE_APPWRITE_DATABASE_ID=$VITE_APPWRITE_DATABASE_ID
+ENV VITE_APPWRITE_USERS_COLLECTION_ID=$VITE_APPWRITE_USERS_COLLECTION_ID
+ENV VITE_APPWRITE_TRIPS_COLLECTION_ID=$VITE_APPWRITE_TRIPS_COLLECTION_ID
+ENV VITE_APPWRITE_BOOKING_COLLECTION_ID=$VITE_APPWRITE_BOOKING_COLLECTION_ID
+ENV VITE_STRIPE_PUBLISHABLE_KEY=$VITE_STRIPE_PUBLISHABLE_KEY
+ENV VITE_APP_URL=$VITE_APP_URL
+
 WORKDIR /app
 COPY . ./
 COPY --from=development-dependencies-env /app/node_modules ./node_modules
@@ -24,13 +58,11 @@ RUN npm run build && \
 # Stage 4: Production Runtime
 FROM node:20-alpine
 
-# Create user FIRST (before copying files)
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
 
 WORKDIR /app
 
-# Copy files with correct ownership from the start
 COPY --chown=nodejs:nodejs package.json package-lock.json ./
 COPY --chown=nodejs:nodejs --from=production-dependencies-env /app/node_modules ./node_modules
 COPY --chown=nodejs:nodejs --from=build-env /app/build ./build

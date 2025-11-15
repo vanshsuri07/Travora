@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import dayjs from "dayjs";
+import { logger } from "./logger";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -18,11 +19,11 @@ export function parseMarkdownToJson(markdownText: string): unknown | null {
     try {
       return JSON.parse(match[1]);
     } catch (error) {
-      console.error("Error parsing JSON:", error);
+      logger.error("Error parsing JSON:", error);
       return null;
     }
   }
-  console.error("No valid JSON found in markdown text.");
+  logger.error("No valid JSON found in markdown text");
   return null;
 }
 
@@ -32,7 +33,7 @@ export function parseTripData(jsonString: string): Trip | null {
 
     return data;
   } catch (error) {
-    console.error("Failed to parse trip data:", error);
+    logger.error("Failed to parse trip data:", error);
     return null;
   }
 }

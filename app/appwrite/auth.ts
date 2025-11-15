@@ -1,6 +1,7 @@
 import { ID, OAuthProvider, Query } from "appwrite";
 import { account, database, appwriteConfig } from "~/appwrite/client";
 import { redirect } from "react-router";
+import { logger } from "~/lib/logger";
 
 export const getExistingUser = async (id: string) => {
     try {
@@ -11,7 +12,7 @@ export const getExistingUser = async (id: string) => {
         );
         return total > 0 ? documents[0] : null;
     } catch (error) {
-        console.error("Error fetching user:", error);
+        logger.error("Error fetching user:", error);
         return null;
     }
 };
@@ -24,7 +25,7 @@ export const storeUserData = async () => {
         // Check if user already exists to avoid duplicates
         const existingUser = await getExistingUser(user.$id);
         if (existingUser) {
-            console.log("User already exists in database");
+            logger.log("User already exists in database");
             return existingUser;
         }
 
@@ -33,7 +34,7 @@ export const storeUserData = async () => {
             ? await getGooglePicture(providerAccessToken)
             : null;
 
-        console.log("Creating new user in database...");
+        logger.log("Creating new user in database");
         const createdUser = await database.createDocument(
             appwriteConfig.databaseId,
             appwriteConfig.userCollectionId,
@@ -48,10 +49,10 @@ export const storeUserData = async () => {
             }
         );
 
-        console.log("User created successfully:", createdUser.$id);
+        logger.log("User created successfully");
         return createdUser;
     } catch (error) {
-        console.error("Error storing user data:", error);
+        logger.error("Error storing user data:", error);
         throw error; // Re-throw to handle in caller
     }
 };
@@ -67,7 +68,7 @@ const getGooglePicture = async (accessToken: string) => {
         const { photos } = await response.json();
         return photos?.[0]?.url || null;
     } catch (error) {
-        console.error("Error fetching Google picture:", error);
+        logger.error("Error fetching Google picture:", error);
         return null;
     }
 };
@@ -80,7 +81,7 @@ export const loginWithGoogle = () => {
     const successUrl = `${window.location.origin}/auth-callback`;
     const failureUrl = `${window.location.origin}/sign-in?error=oauth_failed`;
     
-    console.log("OAuth URLs:", { successUrl, failureUrl });
+    logger.log("OAuth URLs configured");
     
     account.createOAuth2Session(
       OAuthProvider.Google,
@@ -88,7 +89,7 @@ export const loginWithGoogle = () => {
       failureUrl
     );
   } catch (error) {
-    console.error("Error during OAuth2 session creation:", error);
+    logger.error("Error during OAuth2 session creation:", error);
   }
 }
 
@@ -96,39 +97,39 @@ export const loginWithGoogle = () => {
 // NEW: OAuth callback handler
 export const handleOAuthCallback = async () => {
   try {
-    console.log("Handling OAuth callback...");
+    logger.log("Handling OAuth callback");
 
     // Get authenticated user
     const user = await account.get();
     if (!user) {
-      console.error("No authenticated user found");
+      logger.error("No authenticated user found");
       return redirect("/sign-in");
     }
 
-    console.log("Authenticated user:", user.name);
+    logger.log("User authenticated successfully");
 
     // Store/get user data (make sure this includes `role`)
     const userData = await storeUserData();
     if (!userData) {
-      console.error("Failed to create user data");
+      logger.error("Failed to create user data");
       return redirect("/sign-in");
     }
 
     // Check role (from userData or prefs)
     const role = userData.role || user.prefs?.role || "user";
 
-    console.log(`User role detected: ${role}`);
+    logger.log("User role detected");
 
     // Redirect based on role
     if (role === "admin") {
-      console.log("Redirecting to admin dashboard...");
+      logger.log("Redirecting to admin dashboard");
       return redirect("/dashboard");
     } else {
-      console.log("Redirecting to user area...");
+      logger.log("Redirecting to user area");
       return redirect("/user");
     }
   } catch (error) {
-    console.error("OAuth callback error:", error);
+    logger.error("OAuth callback error:", error);
     return redirect("/sign-in?error=callback_failed");
   }
 };
@@ -136,20 +137,20 @@ export const handleOAuthCallback = async () => {
 
 export const logoutUser = async () => {
     try {
-        console.log("Attempting to delete Appwrite session...");
+        logger.log("Attempting to delete session");
         
         // Delete current session from Appwrite
         await account.deleteSession("current");
         
-        console.log("Appwrite session deleted successfully");
+        logger.log("Session deleted successfully");
         return { success: true };
         
     } catch (error) {
-        console.error("Error during Appwrite logout:", error);
+        logger.error("Error during logout:", error);
         
         // Check if it's a session not found error (user might already be logged out)
         if ((error as any)?.code === 401 || (error as any)?.type === 'user_unauthorized') {
-            console.log("Session was already expired/invalid", error);
+            logger.log("Session was already expired/invalid");
             return { success: true, message: "Session was already expired" };
         }
         
@@ -160,16 +161,16 @@ export const logoutUser = async () => {
 
 export const getUser = async () => {
     try {
-        console.log("Getting current user...");
+        logger.log("Getting current user");
         
         // First, check if user is authenticated with Appwrite
         const user = await account.get();
         if (!user) {
-            console.log("No authenticated user found");
+            logger.log("No authenticated user found");
             return redirect("/sign-in");
         }
 
-        console.log("Current user loaded:", user);
+        logger.log("User data loaded successfully");
 
         // Then, get user data from database
         const { documents } = await database.listDocuments(
@@ -182,16 +183,16 @@ export const getUser = async () => {
         );
 
         if (documents.length === 0) {
-            console.log("User data not found in database, creating...");
+            logger.log("User data not found in database, creating");
             // If user data doesn't exist, create it
             const userData = await storeUserData();
             return userData || redirect("/sign-in");
         }
 
-        console.log("User data retrieved:", documents[0]);
+        logger.log("User data retrieved successfully");
         return documents[0];
     } catch (error) {
-        console.error("Error fetching user:", error);
+        logger.error("Error fetching user:", error);
         // Don't redirect on error, return null to handle gracefully
         return null;
     }
@@ -209,7 +210,7 @@ export const getAllUsers = async (limit: number, offset: number) => {
 
         return { users, total };
     } catch (e) {
-        console.log('Error fetching users')
+        logger.error('Error fetching users', e)
         return { users: [], total: 0 }
     }
 }

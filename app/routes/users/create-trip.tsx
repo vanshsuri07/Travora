@@ -4,6 +4,7 @@ import { comboBoxItems, selectItems } from "~/constants";
 import { cn, formatKey } from "~/lib/utlis";
 import { account } from "~/appwrite/client";
 import { useNavigate } from "react-router";
+import { logger } from "~/lib/logger";
 
 // Loader function remains unchanged
 export const loader = async () => {
@@ -203,7 +204,7 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps ) => {
        }
        const user = await account.get();
        if(!user.$id) {
-           console.error('User not authenticated');
+           logger.error('User not authenticated');
            setLoading(false)
            return;
        }
@@ -226,9 +227,9 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps ) => {
            const result: CreateTripResponse = await response.json();
 
            if(result?.id) navigate(`/user/trip/${result.id}`)
-           else console.error('Failed to generate a trip')
+           else logger.error('Failed to generate a trip')
        } catch (e) {
-           console.error('Error generating trip', e);
+           logger.error('Error generating trip', e);
        } finally {
            setLoading(false)
        }

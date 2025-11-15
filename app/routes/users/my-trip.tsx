@@ -5,6 +5,7 @@ import { getUserBookings, getTripById } from "~/appwrite/trips";
 import { parseTripData } from '~/lib/utlis'; // Assuming you have this utility
 import  TripCard  from "../../../components/TripCard"; // Header is no longer needed here
 import { motion, AnimatePresence } from 'framer-motion';
+import { logger } from '~/lib/logger';
 
 // --- UI ENHANCEMENT: Skeleton Loader Component ---
 const TripCardSkeleton = () => (
@@ -60,7 +61,7 @@ const MyTripsPage = () => {
                 setBookedTrips(formattedTrips);
 
             } catch (error) {
-                console.error('💥 Error fetching booked trips:', error);
+                logger.error('Error fetching booked trips:', error);
             } finally {
                 setLoading(false);
             }

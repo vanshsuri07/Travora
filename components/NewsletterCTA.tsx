@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { logger } from "~/lib/logger";
 
 // Defines variants for Framer Motion animations.
 // This function is now inside the component file to resolve the import error.
@@ -58,7 +59,7 @@ const NewsletterCTA: React.FC<NewsletterCTAProps> = ({
     }
 
     // Mock API call
-    console.log("Subscribing with:", email);
+    logger.log("Newsletter subscription");
     setStatus("success");
     setMessage("✅ Thanks for subscribing!");
     setEmail("");

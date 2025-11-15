@@ -6,6 +6,7 @@ import { ServerRouter } from "react-router";
 import { isbot } from "isbot";
 import type { RenderToPipeableStreamOptions } from "react-dom/server";
 import { renderToPipeableStream } from "react-dom/server";
+import { logger } from "~/lib/logger";
 
 export const streamTimeout = 5_000;
 
@@ -57,7 +58,7 @@ function handleRequest(
           // errors encountered during initial shell rendering since they'll
           // reject and get logged in handleDocumentRequest.
           if (shellRendered) {
-            console.error(error);
+            logger.error(error);
           }
         },
       }
@@ -74,7 +75,7 @@ export const handleError: HandleErrorFunction = (error, { request }) => {
   if (!request.signal.aborted) {
   Sentry.captureException(error);
     // optionally log the error so you can see it
-    console.error(error);
+    logger.error(error);
   }
 };
 

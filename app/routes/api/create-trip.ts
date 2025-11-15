@@ -3,6 +3,7 @@ import {GoogleGenerativeAI} from "@google/generative-ai";
 import {parseMarkdownToJson, parseTripData} from "~/lib/utlis";
 import {appwriteConfig, database} from "~/appwrite/client";
 import {ID} from "appwrite";
+import { logger } from "~/lib/logger";
 // import {createProduct} from "~/lib/stripe";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -113,6 +114,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
         return data({ id: result.$id })
     } catch (e) {
-        console.error('Error generating travel plan: ', e);
+        logger.error('Error generating travel plan: ', e);
     }
 }

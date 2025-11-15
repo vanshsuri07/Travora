@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: travel-agency-deployment
+  namespace: travel-agency
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: travel-agency
+  template:
+    metadata:
+      labels:
+        app: travel-agency
+    spec:
+      containers:
+        - name: travel-agency
+          image: vanshsuri07/travel-agency-app:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: travel-agency-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: travel-agency-service
+  namespace: travel-agency
+spec:
+  type: LoadBalancer
+  selector:
+    app: travel-agency
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000

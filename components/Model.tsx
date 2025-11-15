@@ -1,6 +1,7 @@
 import React from 'react';
 import { useGLTF } from "@react-three/drei";
 import * as THREE from 'three';
+import { logger } from '~/lib/logger';
 interface ModelProps extends React.ComponentProps<'mesh'> {}
 
 interface GLTFNodes {
@@ -11,7 +12,7 @@ interface GLTFNodes {
 export default function Model(props: ModelProps) {
   // Destructure 'nodes' to access individual parts of the GLB
   const { nodes } = useGLTF('/earth.glb') as unknown as { nodes: GLTFNodes };
-  console.log(nodes);
+  logger.log("Model nodes loaded");
   // Note: Replace 'pCube1_lambert1_0' with the actual name of your mesh.
   // See the section below on how to find your model's name.
   const earthMesh = nodes.Cube001 as THREE.Mesh;

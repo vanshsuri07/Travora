@@ -3,6 +3,7 @@ import Navbar from '../../../components/Navbar';
 import Footer from '../../../components/Footer'
 import { useState, useEffect } from 'react';
 import { getUser, logoutUser } from '~/appwrite/auth'; // Import both functions
+import { logger } from '~/lib/logger';
 
 const PageLayout = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -18,13 +19,13 @@ const PageLayout = () => {
         if (user) {
           setCurrentUser(user);
           setIsAuthenticated(true);
-          console.log("Current user loaded:", user);
+          logger.log("User data loaded successfully");
         } else {
           setCurrentUser(null);
           setIsAuthenticated(false);
         }
       } catch (error) {
-        console.error("Error loading user:", error);
+        logger.error("Error loading user:", error);
         setCurrentUser(null);
         setIsAuthenticated(false);
       } finally {
@@ -42,7 +43,7 @@ const PageLayout = () => {
 
   const handleLogout = async () => {
     try {
-      console.log("Starting logout process...");
+      logger.log("Starting logout process");
       
       // 1. Call Appwrite logout to delete session
       await logoutUser();
@@ -70,13 +71,13 @@ const PageLayout = () => {
       setCurrentUser(null);
       setIsAuthenticated(false);
       
-      console.log("User logged out successfully");
+      logger.log("User logged out successfully");
       
       // 6. Force redirect to home page to ensure complete cleanup
       window.location.href = '/';
       
     } catch (error) {
-      console.error("Error during logout:", error);
+      logger.error("Error during logout:", error);
       
       // Even if Appwrite logout fails, clear everything locally
       localStorage.clear();

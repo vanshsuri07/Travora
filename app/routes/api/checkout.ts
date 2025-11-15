@@ -1,5 +1,6 @@
 import type { ActionFunctionArgs } from "react-router";
 import { stripe } from "~/lib/stripe";
+import { logger } from "~/lib/logger";
 
 export const action = async (args: ActionFunctionArgs) => {
   try {
@@ -41,7 +42,7 @@ export const action = async (args: ActionFunctionArgs) => {
 
     return Response.json({ sessionId: session.id });
   } catch (err: any) {
-    console.error("Stripe checkout error:", err);
+    logger.error("Stripe checkout error:", err);
     return new Response(
       JSON.stringify({ error: err.message || "Checkout failed" }),
       { status: 500, headers: { "Content-Type": "application/json" } }

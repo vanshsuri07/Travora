@@ -1,6 +1,7 @@
 import {Link, redirect} from "react-router";
 import {loginWithGoogle} from "~/appwrite/auth";
 import {account} from "~/appwrite/client";
+import { logger } from "~/lib/logger";
 
 export async function clientLoader() {
     try {
@@ -8,7 +9,7 @@ export async function clientLoader() {
       if (user.$id) return redirect('/dashboard');
     } catch (e) {
         // User not logged in, continue to sign-in page
-        console.log("No active session");
+        logger.log("No active session");
     }
     return null;
 }

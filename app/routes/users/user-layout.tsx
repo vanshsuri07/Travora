@@ -10,6 +10,7 @@ import { getUser } from '~/appwrite/auth';
 import { parseTripData } from '~/lib/utlis';
 import { allTrips } from '~/constants';
 import LayoutSkeleton from 'components/LayoutSkeleton';
+import { logger } from '~/lib/logger';
 
 const sectionVariants = {
 hidden: { opacity: 0, y: 50 },
@@ -46,11 +47,11 @@ const UserLayout = () => {
   // Function to fetch user's trips
   const fetchUserTrips = async (currentUser) => {
     try {
-      console.log('Fetching trips for user:', currentUser);
+      logger.log('Fetching trips for user');
       
       // Get user's trips
       const response = await getUserTrips(currentUser.accountId, 10, 0);
-      console.log('User trips response:', response);
+      logger.log('User trips retrieved successfully');
       
       const formattedTrips = response.userTrips.map(({ $id, tripDetails, imageUrls }) => ({
         $id,
@@ -62,7 +63,7 @@ const UserLayout = () => {
       return formattedTrips;
       
     } catch (error) {
-      console.error('Error fetching trips:', error);
+      logger.error('Error fetching trips:', error);
       throw error;
     }
   };
@@ -76,7 +77,7 @@ const UserLayout = () => {
         
         // Check authentication
         const currentUser = await getUser();
-        console.log('Current user:', currentUser);
+        logger.log('User data loaded');
         
         if (!currentUser) {
           setAuthChecked(true);
@@ -94,7 +95,7 @@ const UserLayout = () => {
         setUserTrips(trips);
         
       } catch (err) {
-        console.error('Error initializing user data:', err);
+        logger.error('Error initializing user data:', err);
         setError(err.message || 'Failed to load user data');
         setAuthChecked(true);
       } finally {
@@ -117,7 +118,7 @@ const UserLayout = () => {
     try {
       await updateUserWishlist(user.accountId, newWishlist);
     } catch (error) {
-      console.error('Error updating wishlist:', error);
+      logger.error('Error updating wishlist:', error);
       // Revert wishlist on error
       setWishlist(wishlist);
     }
@@ -132,7 +133,7 @@ const UserLayout = () => {
       setUserTrips(trips);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to refresh trips');
-      console.log(err instanceof Error ? err.message : 'Unknown error');
+      logger.log(err instanceof Error ? err.message : 'Unknown error');
     }
   };
 

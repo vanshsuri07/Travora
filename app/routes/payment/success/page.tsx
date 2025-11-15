@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createBooking } from '~/appwrite/trips';
 import { getUser } from '~/appwrite/auth';
+import { logger } from '~/lib/logger';
 
 // A simple, lightweight confetti component for a celebratory effect
 const Confetti = () => {
@@ -51,7 +52,7 @@ const PaymentSuccessPage = () => {
                 const searchParams = new URLSearchParams(location.search);
                 const tripId = searchParams.get('tripId');
                 
-                console.log('Processing booking for tripId:', tripId);
+                logger.log('Processing booking for trip');
                 
                 if (!tripId) {
                     throw new Error('Trip ID not found in URL');
@@ -63,15 +64,15 @@ const PaymentSuccessPage = () => {
                     throw new Error('User not authenticated');
                 }
                 const userId = (user as any).$id;
-                console.log('User retrieved:', userId);
+                logger.log('User retrieved successfully');
 
                 // Create the booking
                 const booking = await createBooking(tripId, userId);
-                console.log('Booking created successfully:', booking);
+                logger.log('Booking created successfully');
                 
                 setBookingStatus('success');
             } catch (error: any) {
-                console.error('Failed to create booking:', error);
+                logger.error('Failed to create booking:', error);
                 setErrorMessage(error.message || 'Failed to create booking');
                 setBookingStatus('error');
             }
