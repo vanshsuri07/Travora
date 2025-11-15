@@ -13,26 +13,33 @@ export const action = async (args: ActionFunctionArgs) => {
     if (isNaN(amount)) {
       throw new Error(`Invalid price: ${price}`);
     }
-const session = await stripe.checkout.sessions.create({
-  payment_method_types: ["card"],
-  line_items: [
-    {
-      price_data: {
-        currency: "inr", // 👈 match frontend display
-        product_data: { name, description, images },
-        unit_amount: amount, // should be in paise (e.g. 50393066 for ₹5,03,930.66)
-      },
-      quantity: 1,
-    },
-  ],
- mode: "payment",
-success_url: `${import.meta.env.VITE_APP_URL}/payment/success?tripId=${tripId}`,
-cancel_url: `${import.meta.env.VITE_APP_URL}/payment/cancel`,
-metadata: { tripId },
-});
 
+    // ✅ Get the base URL from the request
+    const url = new URL(args.request.url);
+    const baseUrl = `${url.protocol}//${url.host}`;
+    
+    // Or use origin directly
+    // const baseUrl = url.origin;
 
-    return Response.json({ sessionId: session.id }); // ✅ Always JSON
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "inr",
+            product_data: { name, description, images },
+            unit_amount: amount,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${baseUrl}/payment/success?tripId=${tripId}`,
+      cancel_url: `${baseUrl}/payment/cancel`,
+      metadata: { tripId },
+    });
+
+    return Response.json({ sessionId: session.id });
   } catch (err: any) {
     console.error("Stripe checkout error:", err);
     return new Response(
