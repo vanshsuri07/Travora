@@ -251,7 +251,7 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps ) => {
             {/* Background Image */}
             <div
                 className="absolute inset-0 z-0 bg-cover bg-center"
-                style={{ backgroundImage: `url('/assets/images/background.png')` }}
+                style={{ backgroundImage: `url('/assets/images/background.webp')` }}
             >
                 {/* Optional: Add an overlay for better text readability */}
                 <div className="absolute inset-0 bg-black opacity-50"></div>
