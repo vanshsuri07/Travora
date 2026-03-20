@@ -41,7 +41,7 @@ const WelcomeSection = () => {
       {/* Background Image with Ken Burns Effect & Dark Overlay */}
       <div
         className="absolute inset-0 bg-cover bg-center z-0 animate-kenburns"
-        style={{ backgroundImage: `url('/assets/images/welcome.png')` }}
+        style={{ backgroundImage: `url('/assets/images/welcome.webp')` }}
       />
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/30 via-transparent to-black/0"></div>
       
