@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { getUser } from "~/appwrite/auth";
-import { getUserBookings, getTripById } from "~/appwrite/trips";
+import { getUserTrips } from "~/appwrite/trips";
 import { parseTripData } from '~/lib/utlis'; // Assuming you have this utility
 import  TripCard  from "../../../components/TripCard"; // Header is no longer needed here
 import { motion, AnimatePresence } from 'framer-motion';
@@ -39,29 +39,26 @@ const MyTripsPage = () => {
                     return;
                 }
 
-                const bookings = await getUserBookings(user.$id);
+                // getUser() returns the DB user document; trips are saved with the Appwrite account ID
+                const userId = user.accountId || user.$id;
+                const { userTrips } = await getUserTrips(userId);
                 
-                if (!bookings || bookings.length === 0) {
+                if (!userTrips || userTrips.length === 0) {
+                    setBookedTrips([]);
                     setLoading(false);
                     return;
                 }
 
-                // --- LOGIC IS UNCHANGED ---
-                const tripPromises = bookings.map(booking => getTripById(booking.tripId));
-                const tripResults = await Promise.all(tripPromises);
-
-                const formattedTrips = tripResults
-                    .filter(trip => trip !== null)
-                    .map((trip) => ({
-                        id: trip.$id,
-                        ...parseTripData(trip.tripDetails),
-                        imageUrls: trip.imageUrls ?? []
-                    }));
+                const formattedTrips = userTrips.map((trip) => ({
+                    id: trip.$id,
+                    ...parseTripData(trip.tripDetails),
+                    imageUrls: trip.imageUrls ?? []
+                }));
                 
                 setBookedTrips(formattedTrips);
 
             } catch (error) {
-                logger.error('Error fetching booked trips:', error);
+                logger.error('Error fetching user trips:', error);
             } finally {
                 setLoading(false);
             }
@@ -72,7 +69,7 @@ const MyTripsPage = () => {
 
     const descriptionText = loading 
         ? "Searching for your adventures..."
-        : `You have ${bookedTrips.length} wonderful adventures booked.`;
+        : `You have ${bookedTrips.length} wonderful itineraries generated.`;
 
     // --- ENHANCED Loading State UI ---
     if (loading) {
