@@ -5,6 +5,7 @@ import { cn, formatKey } from "~/lib/utlis";
 import { account } from "~/appwrite/client";
 import { useNavigate } from "react-router";
 import { logger } from "~/lib/logger";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Loader function remains unchanged
 export const loader = async () => {
@@ -39,7 +40,6 @@ const CustomComboBox: React.FC<ComboBoxProps> = ({
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedValue, setSelectedValue] = useState("");
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     const filteredData = allowFiltering 
@@ -60,7 +60,6 @@ const CustomComboBox: React.FC<ComboBoxProps> = ({
     }, []);
 
     const handleSelect = (item: { text: string; value: string }) => {
-        setSelectedValue(item.text);
         setSearchTerm(item.text);
         setIsOpen(false);
         onChange(item.value);
@@ -78,27 +77,34 @@ const CustomComboBox: React.FC<ComboBoxProps> = ({
                 }}
                 onFocus={() => setIsOpen(true)}
                 placeholder={placeholder}
-                className="w-full bg-white/20 backdrop-blur-sm border border-white/30 rounded-md px-3 py-2 text-white placeholder:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 py-3 text-white placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400/50 transition-all"
                 autoComplete="off"
             />
             
-            {isOpen && (
-                <div className="absolute z-50 w-full mt-1 bg-white/90 backdrop-blur-md border border-white/30 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                    {filteredData.length > 0 ? (
-                        filteredData.map((item, index) => (
-                            <div
-                                key={index}
-                                onClick={() => handleSelect(item)}
-                                className="px-3 py-2 hover:bg-blue-500/20 cursor-pointer text-gray-800 hover:text-blue-800 transition-colors"
-                            >
-                                {item.text}
-                            </div>
-                        ))
-                    ) : (
-                        <div className="px-3 py-2 text-gray-500">No results found</div>
-                    )}
-                </div>
-            )}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="absolute z-50 inset-x-0 mt-2 bg-gray-900/60 backdrop-blur-2xl border border-white/10 rounded-xl shadow-2xl max-h-60 overflow-y-auto scrollbar-hide"
+                    >
+                        {filteredData.length > 0 ? (
+                            filteredData.map((item, index) => (
+                                <div
+                                    key={index}
+                                    onClick={() => handleSelect(item)}
+                                    className="px-4 py-3 hover:bg-white/10 cursor-pointer text-white/90 hover:text-white transition-all duration-200 border-b border-white/5 last:border-none"
+                                >
+                                    {item.text}
+                                </div>
+                            ))
+                        ) : (
+                            <div className="px-4 py-3 text-gray-400 italic">No results found</div>
+                        )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
@@ -128,6 +134,64 @@ const CustomButton: React.FC<CustomButtonProps> = ({
         >
             {children}
         </button>
+    );
+};
+
+// Loading Overlay Component
+const LoadingOverlay: React.FC<{ loading: boolean }> = ({ loading }) => {
+    const [messageIndex, setMessageIndex] = useState(0);
+    const messages = [
+        "Mapping your adventure...",
+        "Finding best destinations...",
+        "Curating local experiences...",
+        "Optimizing your itinerary...",
+        "Almost there, packing your bags..."
+    ];
+
+    useEffect(() => {
+        if (!loading) return;
+        const interval = setInterval(() => {
+            setMessageIndex((prev) => (prev + 1) % messages.length);
+        }, 3000);
+        return () => clearInterval(interval);
+    }, [loading]);
+
+    return (
+        <AnimatePresence>
+            {loading && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-black/60 backdrop-blur-xl rounded-2xl p-8 text-center"
+                >
+                    <div className="relative size-24 mb-6">
+                        <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-0 border-4 border-t-blue-500 border-r-transparent border-b-blue-300 border-l-transparent rounded-full"
+                        />
+                        <motion.div
+                            animate={{ scale: [1, 1.2, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                            className="absolute inset-0 flex items-center justify-center"
+                        >
+                            <span className="text-4xl">🌍</span>
+                        </motion.div>
+                    </div>
+                    <motion.h3
+                        key={messageIndex}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="text-xl font-semibold text-white mb-2"
+                    >
+                        {messages[messageIndex]}
+                    </motion.h3>
+                    <p className="text-gray-300 text-sm">This usually takes about 10-15 seconds.</p>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 };
 
@@ -208,30 +272,36 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps ) => {
            return;
        }
 
-       try {
-           const response = await fetch('/api/create-trip', {
-               method: 'POST',
-               headers: { 'Content-Type': 'application/json'},
-               body: JSON.stringify({
-                   country: formData.country,
-                   numberOfDays: formData.duration,
-                   travelStyle: formData.travelStyle,
-                   interests: formData.interest,
-                   budget: formData.budget,
-                   groupType: formData.groupType,
-                   userId: user.$id
-               })
-           })
+        try {
+            const response = await fetch('/api/create-trip', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    country: formData.country,
+                    numberOfDays: formData.duration,
+                    travelStyle: formData.travelStyle,
+                    interests: formData.interest,
+                    budget: formData.budget,
+                    groupType: formData.groupType,
+                    userId: user.$id
+                })
+            });
 
-           const result: CreateTripResponse = await response.json();
+            const result: CreateTripResponse = await response.json();
 
-           if(result?.id) navigate(`/user/trip/${result.id}`)
-           else logger.error('Failed to generate a trip')
-       } catch (e) {
-           logger.error('Error generating trip', e);
-       } finally {
-           setLoading(false)
-       }
+            if (response.ok && result?.id) {
+                navigate(`/user/trip/${result.id}`);
+            } else {
+                const errorMsg = result.error || 'Failed to generate a trip. Please try again.';
+                setError(errorMsg);
+                logger.error('Failed to generate a trip:', result);
+            }
+        } catch (e) {
+            logger.error('Error generating trip', e);
+            setError("Something went wrong. Please check your connection and try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleChange = (key: keyof TripFormData, value: string | number)  => {
@@ -268,9 +338,10 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps ) => {
 
         <section className="mt-2.5 wrapper-md flex justify-center items-center">
             <form 
-                className="trip-form bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl p-8 max-w-2xl w-full shadow-xl hover:shadow-2xl hover:shadow-blue-400/30 transition-all duration-300 flex flex-col gap-6"
+                className="trip-form relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 max-w-2xl w-full shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 flex flex-col gap-6 overflow-hidden"
                 onSubmit={handleSubmit}
             >
+                <LoadingOverlay loading={loading} />
                 {/* Country */}
                 <div>
                     <label htmlFor="country" className="text-white font-medium block mb-2">Country</label>
@@ -292,7 +363,7 @@ const CreateTrip = ({ loaderData }: Route.ComponentProps ) => {
                         name="duration"
                         type="number"
                         placeholder="Enter a number of days"
-                        className="form-input placeholder:text-gray-200 w-full bg-white/20 backdrop-blur-sm border border-white/30 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 py-3 text-white placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400/50 transition-all"
                         onChange={(e) => handleChange('duration', Number(e.target.value))}
                     />
                 </div>

@@ -1,27 +1,27 @@
-import {type ActionFunctionArgs, data} from "react-router";
-import {GoogleGenerativeAI} from "@google/generative-ai";
-import {parseMarkdownToJson, parseTripData} from "~/lib/utlis";
-import {appwriteConfig, database} from "~/appwrite/client";
-import {ID} from "appwrite";
+import { type ActionFunctionArgs, data } from "react-router";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { parseMarkdownToJson, parseTripData } from "~/lib/utlis";
+import { appwriteConfig, database } from "~/appwrite/client";
+import { ID } from "appwrite";
 import { logger } from "~/lib/logger";
 // import {createProduct} from "~/lib/stripe";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    const {
-        country,
-        numberOfDays,
-        travelStyle,
-        interests,
-        budget,
-        groupType,
-        userId,
-    } = await request.json();
+  const {
+    country,
+    numberOfDays,
+    travelStyle,
+    interests,
+    budget,
+    groupType,
+    userId,
+  } = await request.json();
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-    const unsplashApiKey = process.env.UNSPLASH_ACCESS_KEY!;
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+  const unsplashApiKey = process.env.UNSPLASH_ACCESS_KEY!;
 
-    try {
-        const prompt = `Generate a ${numberOfDays}-day travel itinerary for ${country} based on the following user information:
+  try {
+    const prompt = `Generate a ${numberOfDays}-day travel itinerary for ${country} based on the following user information:
         Budget: '${budget}'
         Interests: '${interests}'
         TravelStyle: '${travelStyle}'
@@ -66,54 +66,69 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         },
         ...
         ]
-    }`;
+        
+    }Return the response as valid JSON wrapped in \`\`\`json blocks. Do not include any explanation or text outside the JSON block.`;
 
-        const textResult = await genAI
-            .getGenerativeModel({ model: 'gemini-2.0-flash' })
-            .generateContent([prompt])
+    const textResult = await genAI
+      .getGenerativeModel({ model: 'gemini-2.5-flash' })
+      .generateContent([prompt])
 
-        const trip = parseMarkdownToJson(textResult.response.text());
+    const trip = parseMarkdownToJson(textResult.response.text());
 
-        const imageResponse = await fetch(
-            `https://api.unsplash.com/search/photos?query=${country} ${interests} ${travelStyle}&client_id=${unsplashApiKey}`
-        );
+    const interests_str = Array.isArray(interests) ? interests.join(" ") : interests;
 
-        const imageUrls = (await imageResponse.json()).results.slice(0, 3)
-            .map((result: any) => result.urls?.regular || null);
+    const imageResponse = await fetch(
+      `https://api.unsplash.com/search/photos?query=${country} ${interests_str} ${travelStyle}&client_id=${unsplashApiKey}`
+    );
+    // console.log("Unsplash query:", `${country} ${interests} ${travelStyle}`);
+    // console.log("Unsplash response status:", imageResponse.status);
+    const imageUrls = (await imageResponse.json()).results?.slice(0, 3)
+      .map((result: any) => result.urls?.regular || null) ?? [];
 
-        const result = await database.createDocument(
-            appwriteConfig.databaseId,
-            appwriteConfig.tripCollectionId,
-            ID.unique(),
-            {
-                tripDetails: JSON.stringify(trip),
-                createdAt: new Date().toISOString(),
-                imageUrls,
-                userId,
-            }
-        )
+    // console.log("Unsplash results count:", imageUrls.length);
 
-        // const tripDetails = parseTripData(result.tripDetails) as Trip;
-        // const tripPrice = parseInt(tripDetail.estimatedPrice.replace('$', ''), 10)
-        // const paymentLink = await createProduct(
-        //     tripDetail.name,
-        //     tripDetail.description,
-        //     imageUrls,
-        //     tripPrice,
-        //     result.$id
-        // )
+    const result = await database.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.tripCollectionId,
+      ID.unique(),
+      {
+        tripDetails: JSON.stringify(trip),
+        createdAt: new Date().toISOString(),
+        imageUrls,
+        userId,
+      }
+    )
 
-        // await database.updateDocument(
-        //     appwriteConfig.databaseId,
-        //     appwriteConfig.tripCollectionId,
-        //     result.$id,
-        //     {
-        //         payment_link: paymentLink.url
-        //     }
-        // )
+    // const tripDetails = parseTripData(result.tripDetails) as Trip;
+    // const tripPrice = parseInt(tripDetail.estimatedPrice.replace('$', ''), 10)
+    // const paymentLink = await createProduct(
+    //     tripDetail.name,
+    //     tripDetail.description,
+    //     imageUrls,
+    //     tripPrice,
+    //     result.$id
+    // )
 
-        return data({ id: result.$id })
-    } catch (e) {
-        logger.error('Error generating travel plan: ', e);
-    }
+    // await database.updateDocument(
+    //     appwriteConfig.databaseId,
+    //     appwriteConfig.tripCollectionId,
+    //     result.$id,
+    //     {
+    //         payment_link: paymentLink.url
+    //     }
+    // )
+
+    return data({ id: result.$id })
+    // Proposed catch block change
+  } catch (error: any) {
+    logger.error('Error generating travel plan:', error);
+    return data(
+      {
+        error: error instanceof Error ? error.message : "Failed to generate travel plan",
+        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      },
+      { status: 500 }
+    );
+  }
+
 }

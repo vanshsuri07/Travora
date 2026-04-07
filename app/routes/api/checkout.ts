@@ -18,7 +18,7 @@ export const action = async (args: ActionFunctionArgs) => {
     // ✅ Get the base URL from the request
     const url = new URL(args.request.url);
     const baseUrl = `${url.protocol}//${url.host}`;
-    
+
     // Or use origin directly
     // const baseUrl = url.origin;
 
@@ -27,7 +27,7 @@ export const action = async (args: ActionFunctionArgs) => {
       line_items: [
         {
           price_data: {
-            currency: "inr",
+            currency: "usd",
             product_data: { name, description, images },
             unit_amount: amount,
           },
