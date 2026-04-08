@@ -10,3 +10,6 @@
 .env*.local
 
 secrets.yaml
+
+dev.log
+.agent

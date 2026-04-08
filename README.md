@@ -1,12 +1,12 @@
 # Travora - Your AI-Powered Travel Companion (with admin dashboard)
 
 <div align="center">
-  <img src="public/assets/icons/logo.svg" alt="Travora Logo" width="150"/>
+  <img src="https://raw.githubusercontent.com/vanshsuri07/Travora/main/public/assets/icons/logo.svg" alt="Travora Logo" width="150"/>
   <h1>Travora</h1>
   <p>Your AI-powered travel companion to discover, plan, and book your next adventure.</p>
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge)](https://travora-agency.vercel.app/)
-[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge)](https://your-build-status-url.com)
+[![Build Status](https://github.com/vanshsuri07/Travora/actions/workflows/docker-build.yml/badge.svg)](https://github.com/vanshsuri07/Travora/actions)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
 </div>
@@ -26,12 +26,12 @@
 <div align="center">
   <table>
     <tr>
-      <td><img src="public/assets/images/sample4.JPG" alt="Screenshot 4" width="400"/></td>
-      <td><img src="public/assets/images/sample1.JPG" alt="Screenshot 1" width="400"/></td>
+      <td><img src="https://raw.githubusercontent.com/vanshsuri07/Travora/main/public/assets/images/sample4.JPG" alt="Screenshot 4" width="400"/></td>
+      <td><img src="https://raw.githubusercontent.com/vanshsuri07/Travora/main/public/assets/images/sample1.JPG" alt="Screenshot 1" width="400"/></td>
     </tr>
     <tr>
-      <td><img src="public/assets/images/sample2.JPG" alt="Screenshot 2" width="400"/></td>
-      <td><img src="public/assets/images/sample3.JPG" alt="Screenshot 3" width="400"/></td>
+      <td><img src="https://raw.githubusercontent.com/vanshsuri07/Travora/main/public/assets/images/sample2.JPG" alt="Screenshot 2" width="400"/></td>
+      <td><img src="https://raw.githubusercontent.com/vanshsuri07/Travora/main/public/assets/images/sample3.JPG" alt="Screenshot 3" width="400"/></td>
     </tr>
   </table>
 </div>
@@ -43,6 +43,15 @@
 - **3D Globe**: React Three Fiber, Three.js, React Globe.gl
 - **AI**: Google Generative AI
 - **Payments**: Stripe
+
+## 🧭 How It Works
+
+1. **Sign up / Log in** — authenticate securely via Appwrite
+2. **Set your preferences** — choose your destination, budget, travel style, group type, and interests
+3. **AI generates your trip** — Google Gemini AI builds a full day-by-day itinerary with activities, best time to visit, and weather info
+4. **Explore visually** — browse your trip with destination photos pulled from Unsplash and an interactive 3D globe
+5. **Manage your trips** — view all generated trips from your personal dashboard
+6. **Admin controls** — admins can manage all users and trips via a dedicated dashboard
 
 ## 🏁 Getting Started
 
