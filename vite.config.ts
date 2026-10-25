@@ -1,5 +1,5 @@
 import { reactRouter } from "@react-router/dev/vite";
-import { sentryReactRouter, type SentryReactRouterBuildOptions } from "@sentry/react-router";
+import { sentryReactRouter, type SentryReactRouterBuildOptions } from "@sentry/react-router/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
