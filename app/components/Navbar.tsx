@@ -207,7 +207,7 @@ const Navbar = ({ onLogout, user }: NavbarProps) => {
                 className="h-9 w-9"
               />
               <span className={`font-bold text-3xl transition-colors ${isScrolled ? 'text-gray-900' : 'text-white'}`}>
-                Travora
+                Travoraaaaaaaa
               </span>
             </Link>
 

@@ -1,7 +1,6 @@
-import React from 'react';
 import { Link } from 'react-router';
 import { motion } from 'framer-motion';
-import { FaMapMarkerAlt, FaChevronDown } from 'react-icons/fa';
+import { FaChevronDown } from 'react-icons/fa';
 
 // Framer Motion animation variants
 const styles = `

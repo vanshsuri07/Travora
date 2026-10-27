@@ -1,22 +1,11 @@
-import React, { useRef, useState, useEffect } from "react";
-
+import { useRef, useState, useEffect } from "react";
 import TripCard from "./TripCard";
-import { FaHeartBroken, FaChevronLeft, FaChevronRight, FaTimesCircle } from "react-icons/fa";
+import { FaHeartBroken, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import type { TripCardData } from "~/types/trips";
 
-interface Trip {
-  $id: string;
-  id: string;
-  name: string;
-  imageUrls: string[];
-  itinerary?: Array<{ location: string }>;
-  interests?: string[];
-  travelStyle?: string;
-  estimatedPrice?: number;
-  tags?: string[] | string;
-}
 
 interface WishlistProps {
-  wishlistedTrips: Trip[];
+  wishlistedTrips: TripCardData[];
   toggleWishlist: (tripId: string) => void;
 }
 
@@ -119,37 +108,26 @@ const Wishlist: React.FC<WishlistProps> = ({ wishlistedTrips, toggleWishlist }) 
             ref={scrollRef}
             className="flex gap-6 overflow-x-auto pb-4 scroll-smooth scrollbar-hide"
           >
-            {wishlistedTrips.map((trip) => (
-              <div key={trip.id} className="relative group flex-shrink-0 w-[280px]">
-                <TripCard
-                  id={trip.id.toString()}
-                  name={trip.name}
-                  imageUrl={trip.imageUrls[0]}
-                  location={trip.itinerary?.[0]?.location ?? ""}
-                  tags={[
-  ...(
-    Array.isArray(trip.tags) 
-      ? trip.tags 
-      : trip.tags 
-        ? [trip.tags] 
-        : []
-  ),
-  ...(
-    Array.isArray(trip.interests) 
-      ? trip.interests 
-      : trip.interests 
-        ? [trip.interests] 
-        : []
-  ),
-  trip.travelStyle || ""
-].filter((tag): tag is string => typeof tag === "string" && tag.trim() !== "")}
+           {wishlistedTrips.map((trip) => {
+  const tags = [...(trip.interests ?? []), trip.travelStyle ?? ""].filter(
+    (tag) => tag.trim() !== ""
+  );
 
-                  price={`$${trip.estimatedPrice ?? ""}`}
-                  isWishlisted={true}
-                  onToggleWishlist={toggleWishlist}
-                />
-              </div>
-            ))}
+  return (
+    <div key={trip.id} className="relative group flex-shrink-0 w-[280px]">
+      <TripCard
+        id={trip.id}
+        name={trip.name}
+        imageUrl={trip.imageUrls[0] ?? "/assets/images/placeholder.webp"}
+        location={trip.itinerary?.[0]?.location ?? ""}
+        tags={tags}
+        price={typeof trip.estimatedPrice === "number" ? `$${trip.estimatedPrice}` : trip.estimatedPrice ?? ""}
+        isWishlisted={true}
+        onToggleWishlist={toggleWishlist}
+      />
+    </div>
+  );
+})}
           </div>
         </div>
       </div>

@@ -1,15 +1,5 @@
-import React from 'react';
 import { cn } from '~/lib/utlis';
-
-interface UserData {
-  name: string;
-  email: string;
-  joinedAt: string;
-  status: 'user' | 'admin';
-  imageUrl: string;
-  
-
-}
+import type { UserData } from '~/types/users';
 
 interface CustomTableProps {
   users: UserData[];

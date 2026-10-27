@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { getUser } from "~/appwrite/auth";
-import { getUserTrips } from "~/appwrite/trips";
 import { parseTripData } from '~/lib/utlis'; // Assuming you have this utility
-import  TripCard  from "../../../components/TripCard"; // Header is no longer needed here
+import  TripCard  from "../../components/TripCard"; // Header is no longer needed here
 import { motion, AnimatePresence } from 'framer-motion';
 import { logger } from '~/lib/logger';
-
+ import { getUser } from "~/appwrite/auth";
+import { getUserBookedTrips } from "~/appwrite/trips";
 // --- UI ENHANCEMENT: Skeleton Loader Component ---
 const TripCardSkeleton = () => (
     <div className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
@@ -29,43 +28,36 @@ const MyTripsPage = () => {
     const [bookedTrips, setBookedTrips] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const user = await getUser();
-                if (!user || !('$id' in user)) {
-                    setLoading(false);
-                    return;
-                }
+  
 
-                // getUser() returns the DB user document; trips are saved with the Appwrite account ID
-                const userId = user.accountId || user.$id;
-                const { userTrips } = await getUserTrips(userId);
-                
-                if (!userTrips || userTrips.length === 0) {
-                    setBookedTrips([]);
-                    setLoading(false);
-                    return;
-                }
 
-                const formattedTrips = userTrips.map((trip) => ({
-                    id: trip.$id,
-                    ...parseTripData(trip.tripDetails),
-                    imageUrls: trip.imageUrls ?? []
-                }));
-                
-                setBookedTrips(formattedTrips);
+useEffect(() => {
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const user = await getUser();
+      if (!user) return; // finally still runs
 
-            } catch (error) {
-                logger.error('Error fetching user trips:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+      // must be the same ID createBooking stored (user.$id or user.accountId)
+      const trips = await getUserBookedTrips(user.accountId);
 
-        fetchData();
-    }, []);
+      const formatted = trips.flatMap((trip) => {
+        const parsed = parseTripData(trip.tripDetails);
+        return parsed
+          ? [{ ...parsed, id: trip.$id, imageUrls: trip.imageUrls ?? [] }]
+          : [];
+      });
+
+      setBookedTrips(formatted);
+    } catch (error) {
+      logger.error("Error fetching user trips:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
 
     const descriptionText = loading 
         ? "Searching for your adventures..."

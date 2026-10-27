@@ -1,7 +1,8 @@
-import  Header  from "../../../components/Header"
+import  Header  from "~/components/Header"
 import { getAllUsers } from "~/appwrite/auth";
 import type { Route } from "./+types/all-users";
-import CustomUsersTable from "components/ui/CustomUserstable";
+import CustomUsersTable from "~/components/ui/CustomUserstable";
+import type { ComponentProps } from "react";
 
 export const loader = async () => {
   const { users, total } = await getAllUsers( 10, 0);
@@ -16,7 +17,9 @@ const { users } = loaderData;
                title="Manage Users"
                description =" Filter, sort, and manage users in the system. You can view user details, edit their information, and delete users as needed."
             />
-        <CustomUsersTable users={users} />
+        <CustomUsersTable
+          users={users}
+        />
     </main>
   )
 }

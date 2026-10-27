@@ -1,7 +1,17 @@
-import { ID, OAuthProvider, Query } from "appwrite";
+import { ID, OAuthProvider, Query, type Models, AppwriteException } from "appwrite";
 import { account, database, appwriteConfig } from "~/appwrite/client";
 import { redirect } from "react-router";
 import { logger } from "~/lib/logger";
+import type { UserData } from "~/types/users";
+
+type UserDoc = Models.Document & {
+  name: string;
+  email: string;
+  joinedAt?: string;
+  status?: "user" | "admin";
+  imageUrl?: string;
+  itineraryCount?: number;
+};
 
 export const getExistingUser = async (id: string) => {
     try {
@@ -72,7 +82,6 @@ const getGooglePicture = async (accessToken: string) => {
         return null;
     }
 };
-
 
 
 export const loginWithGoogle = () => {
@@ -159,58 +168,79 @@ export const logoutUser = async () => {
     }
 };
 
-export const getUser = async () => {
-    try {
-        logger.log("Getting current user");
-        
-        // First, check if user is authenticated with Appwrite
-        const user = await account.get();
-        if (!user) {
-            logger.log("No authenticated user found");
-            return redirect("/sign-in");
-        }
 
-        logger.log("User data loaded successfully");
-
-        // Then, get user data from database
-        const { documents } = await database.listDocuments(
-            appwriteConfig.databaseId,
-            appwriteConfig.userCollectionId,
-            [
-                Query.equal("accountId", user.$id),
-                Query.select(["name", "email", "imageUrl", "joinedAt", "accountId", "wishlist"]),
-            ]
-        );
-
-        if (documents.length === 0) {
-            logger.log("User data not found in database, creating");
-            // If user data doesn't exist, create it
-            const userData = await storeUserData();
-            return userData || redirect("/sign-in");
-        }
-
-        logger.log("User data retrieved successfully");
-        return documents[0];
-    } catch (error) {
-        logger.error("Error fetching user:", error);
-        // Don't redirect on error, return null to handle gracefully
-        return null;
-    }
+export type CurrentUser = UserData & {
+  $id: string;
+  accountId: string;
+  wishlist?: string[]; // adjust to your actual wishlist shape
 };
 
-export const getAllUsers = async (limit: number, offset: number) => {
-    try {
-        const { documents: users, total } = await database.listDocuments(
-            appwriteConfig.databaseId,
-            appwriteConfig.userCollectionId,
-            [Query.limit(limit), Query.offset(offset)]
-        )
+type CurrentUserDoc = Models.Document & {
+  name: string;
+  email: string;
+  imageUrl?: string;
+  joinedAt?: string;
+  status?: "user" | "admin";
+  accountId: string;
+  wishlist?: string[];
+};
 
-        if(total === 0) return { users: [], total };
+export const getUser = async (): Promise<CurrentUser | null> => {
+  try {
+    const account_ = await account.get(); // throws if not logged in
 
-        return { users, total };
-    } catch (e) {
-        logger.error('Error fetching users', e)
-        return { users: [], total: 0 }
+    const { documents } = await database.listDocuments<CurrentUserDoc>(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      [
+        Query.equal("accountId", account_.$id),
+        Query.select(["name", "email", "imageUrl", "joinedAt", "status", "accountId", "wishlist"]),
+      ]
+    );
+
+    const doc = documents[0] ?? (await storeUserData()); // create profile on first login
+    if (!doc) return null;
+
+    return {
+      $id: doc.$id,
+      name: doc.name,
+      email: doc.email,
+      imageUrl: doc.imageUrl ?? "/assets/images/david.webp",
+      joinedAt: doc.joinedAt ?? doc.$createdAt,
+      status: doc.status ?? "user",
+      accountId: doc.accountId,
+      wishlist: doc.wishlist,
+    };
+  } catch (error) {
+    if (error instanceof AppwriteException && error.code === 401) {
+      return null; // simply not logged in
     }
-}
+    logger.error("Error fetching user:", error);
+    return null;
+  }
+};
+
+
+
+export const getAllUsers = async (limit: number, offset: number) => {
+  try {
+    const { documents, total } = await database.listDocuments<UserDoc>(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      [Query.limit(limit), Query.offset(offset)]
+    );
+
+    const users: UserData[] = documents.map((doc) => ({
+      name: doc.name,
+      email: doc.email,
+      joinedAt: doc.joinedAt ?? doc.$createdAt,
+      status: doc.status ?? "user",
+      imageUrl: doc.imageUrl ?? "/assets/images/david.webp", // any placeholder you have
+    }));
+
+    return { users, total };
+  } catch (e) {
+    logger.error("Error fetching users", e);
+    return { users: [] as UserData[], total: 0 };
+  }
+};

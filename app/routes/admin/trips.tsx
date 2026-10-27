@@ -1,12 +1,12 @@
-import Header from "../../../components/Header";
-import TripCard from "../../../components/TripCard";
+import Header from "../../components/Header";
+import TripCard from "../../components/TripCard";
 import {type LoaderFunctionArgs, useSearchParams} from "react-router";
 import {getAllTrips, getTripById} from "~/appwrite/trips";
 import {parseTripData} from "~/lib/utlis";
 import type {Route} from './+types/trips'
 import {useState} from "react";
-
-import CustomPagination from "components/ui/CustomPagination";
+import type {Trip} from "~/types/trips";
+import CustomPagination from "~/components/ui/CustomPagination";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
     const limit = 8;
@@ -61,7 +61,7 @@ const Trips = ({ loaderData }: Route.ComponentProps) => {
                             name={trip.name}
                             imageUrl={trip.imageUrls[0]}
                             location={trip.itinerary?.[0]?.location ?? ""}
-                            tags={[trip.interests, trip.travelStyle]}
+                            tags={[...(trip.interests ?? []), trip.travelStyle ?? ""].filter(Boolean)}
                             price={trip.estimatedPrice}
                             isWishlisted={false}
                             onToggleWishlist={() => {}}
