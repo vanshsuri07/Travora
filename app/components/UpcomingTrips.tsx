@@ -8,21 +8,11 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaSpinner,
-  FaSyncAlt, // Refresh Icon
-  FaSuitcaseRolling,
+  FaSyncAlt
 } from "react-icons/fa";
-
+import type { Trip } from "~/types/trips";
 // --- Interfaces remain the same ---
-interface Trip {
-  $id: string;
-  id: string;
-  name: string;
-  imageUrls: string[];
-  itinerary?: Array<{ location: string }>;
-  interests?: string[];
-  travelStyle?: string;
-  estimatedPrice?: number;
-}
+
 
 interface UpcomingTripsProps {
   trips?: Trip[];

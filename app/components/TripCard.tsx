@@ -1,19 +1,17 @@
 import { Link, useLocation } from "react-router";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { cn, getFirstWord } from "~/lib/utlis";
-
 interface TripCardProps {
   id: string;
   name: string;
   location: string;
   imageUrl: string;
-  tags: string[];
-  price: string;
+  tags?: string[];
+  price: string | number;
   isWishlisted: boolean;
-  onToggleWishlist: (tripId: string) => void;
+  onToggleWishlist: (id: string) => void;
   clickable?: boolean;
 }
-
 
 const Chip = ({ text, className }: { text: string; className?: string }) => (
   <span className={cn(
@@ -61,7 +59,7 @@ const TripCard = ({
       {/* Image + Wishlist */}
       <div className="relative">
         <img src={imageUrl} alt={name} className="w-full h-48 object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/0 to-black/0" />
         <button
           onClick={() => onToggleWishlist(id)}
           className="absolute top-3 left-3 z-10 p-2 rounded-full bg-white/80 text-red-500 hover:text-red-600 shadow-md transition-all"
@@ -84,7 +82,7 @@ const TripCard = ({
       </div>
 
       {/* Tags - Custom implementation */}
-      <div className="p-4 flex-grow">
+      <div className="p-4 grow">
         <div className="flex flex-wrap gap-2">
           {tags?.slice(0, 3).map((tag, index) => (
             <Chip

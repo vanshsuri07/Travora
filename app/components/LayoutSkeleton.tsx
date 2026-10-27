@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 // A more detailed skeleton for a single trip card
 const SkeletonCard = () => (
