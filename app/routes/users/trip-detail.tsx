@@ -95,7 +95,7 @@ const TripDetail = ({ loaderData }: Route.ComponentProps) => {
         <main className="bg-gray-50">
             {/* --- Hero Section --- */}
             <section
-                className="relative h-96 md:h-[500px] bg-cover bg-center flex items-center justify-center text-white"
+                className="relative h-96 md:h-125 bg-cover bg-center flex items-center justify-center text-white"
                 style={{ backgroundImage: `url(${imageUrls[0]})` }}
             >
                 <div className="absolute inset-0 bg-black/50"></div>

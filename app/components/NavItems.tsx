@@ -15,7 +15,7 @@ const NavItems = ({ handleClick}: { handleClick?: () => void }) => {
   return (
     <section className='nav-items'>
         <Link to='/' className="link-logo">
-                <img src="/assets/icons/logo.svg" alt="logo" className="size-[30px]" />
+                <img src="/assets/icons/logo.svg" alt="logo" className="size-7.5" />
                 <h1>Travora</h1>
             </Link>
           
@@ -26,7 +26,7 @@ const NavItems = ({ handleClick}: { handleClick?: () => void }) => {
              <NavLink to={href}  key={id}>
                 {({ isActive } :{ isActive : boolean}) => (
                 <div  className={cn('group nav-item',{
-                    'bg-primary-100 !text-white' : isActive
+                    'bg-primary-100 text-white!' : isActive
                 })} onClick={handleClick}>
                     <img
                        src={icon}

@@ -200,7 +200,7 @@ const Navbar = ({ onLogout, user }: NavbarProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+            <Link to="/" className="flex items-center gap-2 shrink-0">
               <img
                 src="/assets/icons/logo.svg"
                 alt="Travora Logo"
@@ -244,7 +244,7 @@ const Navbar = ({ onLogout, user }: NavbarProps) => {
                   <motion.button 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-5 py-2.5 rounded-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-500 shadow-lg hover:shadow-xl transition-shadow"
+                    className="px-5 py-2.5 rounded-lg font-semibold text-white bg-linear-to-r from-blue-500 to-purple-500 shadow-lg hover:shadow-xl transition-shadow"
                   >
                     Sign In
                   </motion.button>
@@ -297,7 +297,7 @@ const Navbar = ({ onLogout, user }: NavbarProps) => {
                 </button>
               ) : (
                 <Link to="/sign-in">
-                  <button className="px-8 py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-500">
+                  <button className="px-8 py-3 rounded-lg font-semibold text-white bg-linear-to-r from-blue-500 to-purple-500">
                     Sign In
                   </button>
                 </Link>

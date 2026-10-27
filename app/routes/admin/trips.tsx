@@ -74,7 +74,7 @@ const Trips = ({ loaderData }: Route.ComponentProps) => {
   pageSize={8}
   currentPage={currentPage}
   onPageChange={handlePageChange}
-  className="!mb-4"
+  className="mb-4!"
 />
             </section>
         </main>
