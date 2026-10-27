@@ -2,9 +2,9 @@ import type { LoaderFunctionArgs } from "react-router";
 import { getAllTrips, getTripById } from "~/appwrite/trips";
 import type { Route } from './+types/trip-detail';
 import { cn, getFirstWord, parseTripData } from "~/lib/utlis";
-import  TripCard  from "../../../components/TripCard"; // Assuming Header is not needed directly here anymore
+import  TripCard  from "../../components/TripCard"; // Assuming Header is not needed directly here anymore
 import { logger } from "~/lib/logger";
-
+import type { Trip} from "~/types/trips"; // Assuming you have a Trip type defined
 // Icons - It's better to use a library or inline SVGs
 const CalendarIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 inline-block text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>;
 const LocationIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 inline-block text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>;
@@ -79,12 +79,12 @@ const TripDetail = ({ loaderData }: Route.ComponentProps) => {
         }
     };
 
-    const pillItems = [
-        { text: travelStyle, bg: 'bg-pink-100 text-pink-700' },
-        { text: groupType, bg: 'bg-blue-100 text-blue-700' },
-        { text: budget, bg: 'bg-green-100 text-green-700' },
-        { text: interests, bg: 'bg-indigo-100 text-indigo-700' },
-    ]
+  const pillItems: { text: string | undefined; bg: string }[] = [
+  { text: travelStyle, bg: 'bg-pink-100 text-pink-700' },
+  { text: groupType, bg: 'bg-blue-100 text-blue-700' },
+  { text: budget, bg: 'bg-green-100 text-green-700' },
+  { text: interests?.join(', '), bg: 'bg-indigo-100 text-indigo-700' },
+];
 
     const visitTimeAndWeatherInfo = [
         { title: 'Best Time to Visit', items: bestTimeToVisit },
@@ -95,7 +95,7 @@ const TripDetail = ({ loaderData }: Route.ComponentProps) => {
         <main className="bg-gray-50">
             {/* --- Hero Section --- */}
             <section
-                className="relative h-96 md:h-[500px] bg-cover bg-center flex items-center justify-center text-white"
+                className="relative h-96 md:h-125 bg-cover bg-center flex items-center justify-center text-white"
                 style={{ backgroundImage: `url(${imageUrls[0]})` }}
             >
                 <div className="absolute inset-0 bg-black/50"></div>
@@ -222,7 +222,9 @@ const TripDetail = ({ loaderData }: Route.ComponentProps) => {
                                 name={trip.name}
                                 imageUrl={trip.imageUrls[0]}
                                 location={trip.itinerary?.[0]?.location ?? ""}
-                                tags={[trip.interests, trip.travelStyle].filter(Boolean)}
+                                  tags={[...(trip.interests ?? []), trip.travelStyle].filter(
+  (tag): tag is string => Boolean(tag)
+)}
                                 price={trip.estimatedPrice}
                                 isWishlisted={false}
                                 onToggleWishlist={() => {}}

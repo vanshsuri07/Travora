@@ -1,13 +1,13 @@
-import Header from "../../../components/Header";
-import StatsCard from "../../../components/StatsCard";
-import TripCard from "../../../components/TripCard";
+import Header from "../../components/Header";
+import StatsCard from "../../components/StatsCard";
+import TripCard from "../../components/TripCard";
 import {getAllUsers, getUser} from "~/appwrite/auth";
 import type { Route } from './+types/dashboard';
 import {getTripsByTravelStyle, getUserGrowthPerDay, getUsersAndTripsStats} from "~/appwrite/dashboard";
 import {getAllTrips} from "~/appwrite/trips";
 import {parseTripData} from "~/lib/utlis";
 import { Link } from "react-router";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, ComposedChart } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ComposedChart } from 'recharts';
 
 export const clientLoader = async () => {
     const [

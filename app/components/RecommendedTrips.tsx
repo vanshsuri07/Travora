@@ -3,19 +3,11 @@ import { useState, useRef, useEffect } from "react";
 import TripCard from "./TripCard";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { motion } from "framer-motion";
+import type { TripCardData } from "~/types/trips";
 
-interface Trip {
-  id: string | number;
-  name: string;
-  imageUrls?: string[];
-  itinerary?: Array<{ location: string }>;
-  tags?: string[];
-  travelStyle?: string;
-  estimatedPrice: string | number;
-}
 
 interface RecommendedTripsProps {
-  trips: Trip[];
+  trips: TripCardData[];
   wishlist: string[];
   onToggleWishlist: (tripId: string) => void;
 }
@@ -135,8 +127,12 @@ const RecommendedTrips: React.FC<RecommendedTripsProps> = ({
                   name={trip.name}
                   imageUrl={trip.imageUrls?.[0] ?? ""}
                   location={trip.itinerary?.[0]?.location ?? ""}
-                  tags={[...(trip.tags || []), trip.travelStyle].filter((tag): tag is string => typeof tag === "string")}
-                  price={`$${trip.estimatedPrice}`}
+                  tags={[...(trip.interests ?? []), trip.travelStyle ?? ""].filter(Boolean)}
+                  price={
+  typeof trip.estimatedPrice === "number"
+    ? `$${trip.estimatedPrice}`
+    : trip.estimatedPrice ?? ""
+}
                   isWishlisted={wishlist.includes(trip.id.toString())}
                   onToggleWishlist={onToggleWishlist}
                 />

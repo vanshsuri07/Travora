@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router';
-import Navbar from '../../../components/Navbar';
-import Footer from '../../../components/Footer'
+import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer'
 import { useState, useEffect } from 'react';
 import { getUser, logoutUser } from '~/appwrite/auth'; // Import both functions
 import { logger } from '~/lib/logger';

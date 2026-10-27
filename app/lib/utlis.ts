@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import dayjs from "dayjs";
 import { logger } from "./logger";
-
+import type { Trip } from "~/types/trips";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -27,13 +27,18 @@ export function parseMarkdownToJson(markdownText: string): unknown | null {
   return null;
 }
 
-export function parseTripData(jsonString: string): Trip | null {
+export function parseTripData(json: string): Trip | null {
   try {
-    const data: Trip = JSON.parse(jsonString);
-
-    return data;
-  } catch (error) {
-    logger.error("Failed to parse trip data:", error);
+    const raw = JSON.parse(json);
+    return {
+      ...raw,
+      name: raw.name ?? "Untitled trip",
+      interests: Array.isArray(raw.interests)
+        ? raw.interests
+        : String(raw.interests ?? "").split(",").map((s) => s.trim()).filter(Boolean),
+      // add defaults for any other required Trip fields
+    };
+  } catch {
     return null;
   }
 }

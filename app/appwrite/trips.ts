@@ -19,7 +19,23 @@ export const getAllTrips = async (limit: number, offset: number) => {
         total: allTrips.total,
     }
 }
+export const getUserBookedTrips = async (userId: string) => {
+  const { documents: bookings } = await database.listDocuments(
+    appwriteConfig.databaseId,
+    appwriteConfig.bookingCollectionId,
+    [Query.equal("userId", userId), Query.limit(100)]
+  );
 
+  const tripIds = [...new Set(bookings.map((b) => b.tripId as string))];
+  if (tripIds.length === 0) return [];
+
+  const { documents } = await database.listDocuments(
+    appwriteConfig.databaseId,
+    appwriteConfig.tripCollectionId,
+    [Query.equal("$id", tripIds), Query.limit(100)]
+  );
+  return documents;
+};
 // NEW: Function to get trips for a specific user
 export const getUserTrips = async (userId: string, limit: number = 10, offset: number = 0) => {
     try {
