@@ -89,6 +89,12 @@ Create a production-ready build:
 npm run build
 ```
 
+To bundle the client and server entry points directly with esbuild:
+
+```bash
+npm run build:esbuild
+```
+
 ## 🚢 Deployment
 
 ### Docker Deployment
