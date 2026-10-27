@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router';
 import { motion } from 'framer-motion';
 import { FaBrain, FaPlaneDeparture, FaRegPaperPlane, FaUsers } from 'react-icons/fa';

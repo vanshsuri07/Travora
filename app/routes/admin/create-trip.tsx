@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { Route } from '../admin/+types/create-trip';
 import { comboBoxItems, selectItems } from "~/constants";
 import { cn, formatKey } from "~/lib/utlis";

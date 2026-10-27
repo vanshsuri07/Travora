@@ -1,15 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Navigate } from 'react-router';
 import { motion } from 'framer-motion';
-import UpcomingTrips from 'components/UpcomingTrips';
-import WelcomeSection from 'components/Welcome';
-import Wishlist from 'components/Wishlist';
-import RecommendedTrips from '../../../components/RecommendedTrips';
+import UpcomingTrips from '~/components/UpcomingTrips';
+import WelcomeSection from '~/components/Welcome';
+import Wishlist from '~/components/Wishlist';
+import RecommendedTrips from '../../components/RecommendedTrips';
 import { getUserTrips, getAllTrips, updateUserWishlist } from '~/appwrite/trips';
-import { getUser } from '~/appwrite/auth';
+import { getUser, type CurrentUser } from '~/appwrite/auth';
 import { parseTripData } from '~/lib/utlis';
 import { allTrips } from '~/constants';
-import LayoutSkeleton from 'components/LayoutSkeleton';
+import LayoutSkeleton from '~/components/LayoutSkeleton';
 import { logger } from '~/lib/logger';
 
 const sectionVariants = {
@@ -23,11 +23,16 @@ visible: {
   }
 }
 };
+type UserTrip = ReturnType<typeof parseTripData> & {
+  $id: string;
+  id: string;
+  imageUrls: string[];
+};
 
 
 const UserLayout = () => {
-  const [userTrips, setUserTrips] = useState([]);
-  const [user, setUser] = useState(null);
+  const [userTrips, setUserTrips] = useState<UserTrip[]>([]);
+  const [user, setUser] = useState<CurrentUser | null>(null)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [wishlist, setWishlist] = useState<string[]>([]);
@@ -45,7 +50,7 @@ const UserLayout = () => {
   }));
 
   // Function to fetch user's trips
-  const fetchUserTrips = async (currentUser) => {
+  const fetchUserTrips = async (currentUser: CurrentUser): Promise<UserTrip[]> => {
     try {
       logger.log('Fetching trips for user');
       
@@ -53,14 +58,11 @@ const UserLayout = () => {
       const response = await getUserTrips(currentUser.accountId, 10, 0);
       logger.log('User trips retrieved successfully');
       
-      const formattedTrips = response.userTrips.map(({ $id, tripDetails, imageUrls }) => ({
-        $id,
-        id: $id,
-        ...parseTripData(tripDetails),
-        imageUrls: imageUrls ?? []
-      }));
-      
-      return formattedTrips;
+      const formattedTrips = response.userTrips.flatMap(({ $id, tripDetails, imageUrls }) => {
+  const trip = parseTripData(tripDetails);
+  return trip ? [{ ...trip, $id, id: $id, imageUrls: imageUrls ?? [] }] : [];
+});
+      return formattedTrips;  
       
     } catch (error) {
       logger.error('Error fetching trips:', error);
@@ -96,7 +98,7 @@ const UserLayout = () => {
         
       } catch (err) {
         logger.error('Error initializing user data:', err);
-        setError(err.message || 'Failed to load user data');
+        setError(err instanceof Error ? err.message : 'Failed to load user data');
         setAuthChecked(true);
       } finally {
         setLoading(false);
