@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { account, database, appwriteConfig } from "~/appwrite/client";
 import { Query } from "appwrite";
@@ -7,7 +7,7 @@ import { logger } from "~/lib/logger";
 export default function AuthCallback() {
   const navigate = useNavigate();
   const [status, setStatus] = useState("Processing...");
-
+  const hasRun=useRef(false);
   useEffect(() => {
     const handleAuth = async () => {
       try {
@@ -17,19 +17,20 @@ export default function AuthCallback() {
         const secret = urlParams.get('secret');
         
         logger.log("OAuth params received");
-
+       // Remove OAuth credentials from the visible URL and browser history
+      window.history.replaceState({}, document.title, "/auth-callback");
         // If we have userId and secret, create the session
         if (userId && secret) {
           setStatus("Creating session...");
           await account.createSession(userId, secret);
           logger.log("Session created from OAuth params");
           
-          // Wait for session to settle
-          await new Promise(resolve => setTimeout(resolve, 500));
+          // // Wait for session to settle
+          // await new Promise(resolve => setTimeout(resolve, 500));
         } else {
           // If no params, wait for automatic session creation
-          setStatus("Waiting for authentication...");
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          // setStatus("Waiting for authentication...");
+          // await new Promise(resolve => setTimeout(resolve, 2000));
         }
         
         // Try to get the authenticated user with retries
@@ -73,7 +74,7 @@ export default function AuthCallback() {
           
           if (!userDoc) {
             logger.error("Failed to create user data");
-            navigate("/sign-in?error=user_creation_failed");
+            navigate("/sign-in?auth_failed=true");
             return;
           }
         } else {
@@ -81,7 +82,7 @@ export default function AuthCallback() {
         }
 
         // Check role
-        const role = userDoc.role || user.prefs?.role || "user";
+        const role = userDoc.status || user.prefs?.role || "user";
         logger.log("Redirecting to dashboard");
 
         // Redirect based on role
@@ -93,10 +94,11 @@ export default function AuthCallback() {
         
       } catch (err: any) {
         logger.error("Auth callback failed:", err);
-        navigate(`/sign-in?error=${encodeURIComponent(err.message || 'auth_failed')}`);
+        navigate(`/sign-in?auth_failed=true`);
       }
     };
-
+   if(hasRun.current) return;
+   hasRun.current = true;
     handleAuth();
   }, [navigate]);
 
